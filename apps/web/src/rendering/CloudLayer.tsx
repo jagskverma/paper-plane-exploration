@@ -1,23 +1,19 @@
-/* eslint-disable react-hooks/purity */
 import { useMemo } from "react";
 import * as THREE from "three";
 
 interface CloudLayerParams {
-  /** Altitude of this cloud layer. */
   altitude: number;
-  /** Radius of the cloud ring/dome. */
   radius: number;
-  /** Number of cloud clumps. */
   count: number;
-  /** Base color of clouds. */
   color: string;
-  /** Opacity of the cloud material. */
   opacity: number;
+  /** Size of individual cloud puffs. */
+  puffSize: number;
 }
 
 /**
- * A ring of flat cloud planes at a given altitude.
- * Creates stylized lowpoly cloud layers circling the world.
+ * Soft cloud layer using sprite particles instead of hard geometry.
+ * Scattered cloud puffs at a given altitude with soft radial fade.
  */
 export function CloudLayer({
   altitude,
@@ -25,45 +21,71 @@ export function CloudLayer({
   count,
   color,
   opacity,
+  puffSize,
 }: CloudLayerParams) {
-  const clouds = useMemo(() => {
-    const items: { position: [number, number, number]; rotation: [number, number, number]; scale: number }[] = [];
-
+  const { positions, sizes } = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    const siz = new Float32Array(count);
     for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.3;
+      const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
       const r = radius + (Math.random() - 0.5) * radius * 0.3;
-
-      items.push({
-        position: [Math.cos(angle) * r, altitude + (Math.random() - 0.5) * 30, Math.sin(angle) * r],
-        rotation: [0, angle + Math.PI / 2, (Math.random() - 0.5) * 0.2],
-        scale: 8 + Math.random() * 25,
-      });
+      pos[i * 3] = Math.cos(angle) * r;
+      pos[i * 3 + 1] = altitude + (Math.random() - 0.5) * 15;
+      pos[i * 3 + 2] = Math.sin(angle) * r;
+      siz[i] = puffSize * (0.5 + Math.random() * 1.0);
     }
-    return items;
-  }, [altitude, radius, count]);
+    return { positions: pos, sizes: siz };
+  }, [altitude, radius, count, puffSize]);
 
-  // Shared geometry — thin plane
-  const geo = useMemo(() => new THREE.PlaneGeometry(20, 5), []);
+  const geo = useMemo(() => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    g.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+    return g;
+  }, [positions, sizes]);
 
-  return (
-    <group>
-      {clouds.map((c, i) => (
-        <mesh
-          key={i}
-          position={c.position}
-          rotation={c.rotation}
-          scale={[c.scale, 1, 1]}
-          geometry={geo}
-        >
-          <meshBasicMaterial
-            color={color}
-            transparent
-            opacity={opacity}
-            depthWrite={false}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-      ))}
-    </group>
+  // Soft radial gradient texture for cloud puffs
+  const texture = useMemo(() => createCloudTexture(), []);
+
+  const mat = useMemo(
+    () =>
+      new THREE.PointsMaterial({
+        map: texture,
+        color,
+        transparent: true,
+        opacity,
+        depthWrite: false,
+        blending: THREE.NormalBlending,
+        sizeAttenuation: true,
+      }),
+    [texture, color, opacity],
   );
+
+  return <points geometry={geo} material={mat} />;
+}
+
+/** Creates a soft radial gradient texture for cloud sprite particles. */
+function createCloudTexture(): THREE.Texture {
+  const size = 64;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d")!;
+
+  // Radial gradient: opaque center fading to transparent edge
+  const gradient = ctx.createRadialGradient(
+    size / 2, size / 2, 0,
+    size / 2, size / 2, size / 2,
+  );
+  gradient.addColorStop(0, "rgba(255,255,255,1)");
+  gradient.addColorStop(0.2, "rgba(255,255,255,0.8)");
+  gradient.addColorStop(0.5, "rgba(255,255,255,0.3)");
+  gradient.addColorStop(1, "rgba(255,255,255,0)");
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, size, size);
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
 }

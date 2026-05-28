@@ -24,10 +24,44 @@ export function Atmosphere() {
       <SkyDome sunAngle={sunAngle} />
       <SunLight sunAngle={sunAngle} />
       <HeightFog sunAngle={sunAngle} />
-      <CloudLayer altitude={80} radius={160} count={18} color="#ffffff" opacity={0.15} />
-      <CloudLayer altitude={50} radius={140} count={12} color="#f0e8ff" opacity={0.2} />
-      <CloudLayer altitude={20} radius={120} count={8} color="#e8e0f0" opacity={0.25} />
-      <FloatingParticles count={200} spread={100} color="#ffe8d0" size={0.3} />
+
+      {/* High-altitude clouds — scattered across the sky */}
+      <CloudLayer
+        altitude={90}
+        radius={180}
+        count={60}
+        color="#f8faff"
+        opacity={0.35}
+        puffSize={20}
+      />
+
+      {/* Mid-altitude clouds — more substantial */}
+      <CloudLayer
+        altitude={55}
+        radius={150}
+        count={50}
+        color="#eef0ff"
+        opacity={0.4}
+        puffSize={18}
+      />
+
+      {/* Low clouds — closer, more visible */}
+      <CloudLayer
+        altitude={25}
+        radius={120}
+        count={40}
+        color="#e0e4f8"
+        opacity={0.35}
+        puffSize={14}
+      />
+
+      {/* Atmospheric particles for depth */}
+      <FloatingParticles
+        count={300}
+        spread={120}
+        color="#ffe8d0"
+        size={0.25}
+      />
     </>
   );
 }

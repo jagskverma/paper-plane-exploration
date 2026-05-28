@@ -11,7 +11,7 @@ export function SkyDome({ sunAngle }: SkyParams) {
 
     const zenithColor = new THREE.Color("#2c3e80");
     const horizonColor = new THREE.Color("#f4a460");
-    const nadirColor = new THREE.Color("#1a1a3e");
+    const nadirColor = new THREE.Color("#3a3a5c"); // soft dark, not black
 
     const t = Math.max(0, Math.min(1, sunAngle / (Math.PI / 2)));
     const skyZenith = new THREE.Color().lerpColors(
