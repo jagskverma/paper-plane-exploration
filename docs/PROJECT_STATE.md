@@ -4,32 +4,34 @@
 
 ## Current Phase
 
-**Phase 0 — Documentation & Planning**
+**Phase 0 — Project Governance** ✅ Complete
 
 ## Current Focus
 
-Documentation and governance scaffolding. No code yet.
+Documentation is stable. Awaiting human sign-off before Phase 1.
 
 ## What's Done
 
 - [x] Project vision defined (VISION.md)
 - [x] Architecture decisions documented (ARCHITECTURE.md)
 - [x] Development rules established (RULES.md)
-- [x] Roadmap sequenced (ROADMAP.md)
+- [x] Roadmap: 22 phases with risk annotations and 5 milestones (ROADMAP.md)
 - [x] Task template standardized (TASK_TEMPLATE.md)
 - [x] ADR system initialized (docs/decisions/)
 - [x] ADR-001: Cube-sphere topology decision recorded
-- [x] Subsystem boundaries defined
+- [x] Subsystem boundaries defined (7 subsystems, explicit interfaces)
 - [x] Review gate workflow established
-- [x] Forbidden patterns expanded
+- [x] Forbidden patterns expanded (14 items)
 - [x] Orchestration model codified (Human → Orchestrator → Agent)
+- [x] Production philosophy: Feel → Atmosphere → Traversal → Scale → Variety → Content → Polish
 - [x] Repo initialized (git)
 
 ## What's Next
 
 - [ ] Receive additional design ideas from human
 - [ ] Create ADRs for any newly surfaced decisions
-- [ ] Finalize Phase 0 — lock docs before Phase 1
+- [ ] Lock Phase 0 — confirm docs are complete
+- [ ] Phase 1: Engine Foundation
 
 ## Active Decisions
 
@@ -47,7 +49,7 @@ _None._
 | `docs/VISION.md` | Emotional target, art direction, what this IS / IS NOT | Human |
 | `docs/ARCHITECTURE.md` | Technical decisions, subsystem map, rendering stack | Orchestrator |
 | `docs/RULES.md` | Development constraints, agent rules, forbidden patterns | Human + Orchestrator |
-| `docs/ROADMAP.md` | Phase sequencing, milestone gates | Orchestrator |
+| `docs/ROADMAP.md` | 22-phase sequence, risk zones, milestone gates | Orchestrator |
 | `docs/TASK_TEMPLATE.md` | Required format for all agent tasks | Orchestrator |
 | `docs/PROJECT_STATE.md` | Current phase, focus, done/next/blockers (this file) | Orchestrator |
 | `docs/decisions/` | Architecture Decision Records | Orchestrator |
