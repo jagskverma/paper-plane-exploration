@@ -20,7 +20,7 @@ export function HeightFog({ sunAngle }: HeightFogParams) {
       Math.max(0.1, sunHeight * 0.7 + 0.3),
     );
 
-    scene.fog = new THREE.FogExp2(fogColor, 0.0008);
+    scene.fog = new THREE.FogExp2(fogColor, 0.00025);
     scene.background = fogColor;
     setupDone.current = true;
   }

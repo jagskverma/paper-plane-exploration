@@ -24,17 +24,17 @@ export function Atmosphere() {
       <SunLight sunAngle={sunAngle} />
       <HeightFog sunAngle={sunAngle} />
 
-      {/* Low scattered clouds */}
-      <CloudLayer altitude={30} radius={130} count={30}
-        color="#ffffff" opacity={0.5} puffSize={25} />
+      {/* Low scattered clouds — fly right through them */}
+      <CloudLayer altitude={40} radius={100} count={25}
+        color="#f0f4ff" opacity={0.3} />
 
-      {/* Mid cloud layer */}
-      <CloudLayer altitude={60} radius={150} count={25}
-        color="#f8faff" opacity={0.4} puffSize={30} />
+      {/* Mid cloud layer — visible above */}
+      <CloudLayer altitude={80} radius={120} count={20}
+        color="#e8f0ff" opacity={0.35} />
 
-      {/* High wispy clouds */}
-      <CloudLayer altitude={100} radius={180} count={20}
-        color="#eef2ff" opacity={0.3} puffSize={35} />
+      {/* High cloud layer — clearly in the sky */}
+      <CloudLayer altitude={130} radius={150} count={15}
+        color="#e0ecff" opacity={0.4} />
 
       {/* Depth particles */}
       <FloatingParticles count={200} spread={100} color="#ffffff" size={0.3} />

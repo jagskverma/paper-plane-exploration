@@ -2,18 +2,21 @@ import { useMemo } from "react";
 import * as THREE from "three";
 
 interface CloudLayerParams {
+  /** Center altitude of this cloud ring. */
   altitude: number;
+  /** Radius of the ring. */
   radius: number;
+  /** How many cloud planes. */
   count: number;
+  /** Tint color. */
   color: string;
+  /** Opacity of cloud material. */
   opacity: number;
-  /** Size of individual cloud puffs. */
-  puffSize: number;
 }
 
 /**
- * Soft cloud layer using sprite particles instead of hard geometry.
- * Scattered cloud puffs at a given altitude with soft radial fade.
+ * Ring of large flat cloud planes scattered at a given altitude.
+ * Designed to be seen from below — the plane flies under the clouds.
  */
 export function CloudLayer({
   altitude,
@@ -21,71 +24,56 @@ export function CloudLayer({
   count,
   color,
   opacity,
-  puffSize,
 }: CloudLayerParams) {
-  const { positions, sizes } = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    const siz = new Float32Array(count);
+  const clouds = useMemo(() => {
+    const items: {
+      position: [number, number, number];
+      scale: [number, number, number];
+    }[] = [];
+
     for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
-      const r = radius + (Math.random() - 0.5) * radius * 0.3;
-      pos[i * 3] = Math.cos(angle) * r;
-      pos[i * 3 + 1] = altitude + (Math.random() - 0.5) * 15;
-      pos[i * 3 + 2] = Math.sin(angle) * r;
-      siz[i] = puffSize * (0.5 + Math.random() * 1.0);
+      const angle = (i / count) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
+      const r = radius + (Math.random() - 0.5) * radius * 0.4;
+      const y = altitude + (Math.random() - 0.5) * 20;
+
+      items.push({
+        position: [
+          Math.cos(angle) * r,
+          y,
+          Math.sin(angle) * r,
+        ],
+        scale: [
+          15 + Math.random() * 40,
+          1,
+          5 + Math.random() * 15,
+        ],
+      });
     }
-    return { positions: pos, sizes: siz };
-  }, [altitude, radius, count, puffSize]);
+    return items;
+  }, [altitude, radius, count]);
 
-  const geo = useMemo(() => {
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    g.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
-    return g;
-  }, [positions, sizes]);
+  // Shared plane geometry — horizontal, facing up
+  const geo = useMemo(() => new THREE.PlaneGeometry(1, 1), []);
 
-  // Soft radial gradient texture for cloud puffs
-  const texture = useMemo(() => createCloudTexture(), []);
-
-  const mat = useMemo(
-    () =>
-      new THREE.PointsMaterial({
-        map: texture,
-        color,
-        transparent: true,
-        opacity,
-        depthWrite: false,
-        blending: THREE.NormalBlending,
-        sizeAttenuation: true,
-      }),
-    [texture, color, opacity],
+  return (
+    <group>
+      {clouds.map((c, i) => (
+        <mesh
+          key={i}
+          position={c.position}
+          rotation={[-Math.PI / 2, 0, 0]} // horizontal, facing up
+          scale={c.scale}
+          geometry={geo}
+        >
+          <meshBasicMaterial
+            color={color}
+            transparent
+            opacity={opacity}
+            depthWrite={false}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      ))}
+    </group>
   );
-
-  return <points geometry={geo} material={mat} />;
-}
-
-/** Creates a soft radial gradient texture for cloud sprite particles. */
-function createCloudTexture(): THREE.Texture {
-  const size = 64;
-  const canvas = document.createElement("canvas");
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext("2d")!;
-
-  // Radial gradient: opaque center fading to transparent edge
-  const gradient = ctx.createRadialGradient(
-    size / 2, size / 2, 0,
-    size / 2, size / 2, size / 2,
-  );
-  gradient.addColorStop(0, "rgba(255,255,255,1)");
-  gradient.addColorStop(0.2, "rgba(255,255,255,0.8)");
-  gradient.addColorStop(0.5, "rgba(255,255,255,0.3)");
-  gradient.addColorStop(1, "rgba(255,255,255,0)");
-
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, size, size);
-
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.needsUpdate = true;
-  return tex;
 }
