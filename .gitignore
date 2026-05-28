@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+.vite/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Debug
+npm-debug.log*
+pnpm-debug.log*
+
+# Cache
+.eslintcache
+.tsbuildinfo
+
+# Test coverage
+coverage/
+
+# Prototype / research artifacts (keep in research/, not tracked)
+research/output/
+research/build/
