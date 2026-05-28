@@ -50,6 +50,14 @@
 
 Set up Vite + TypeScript + Three.js + React Three Fiber. Render loop, hot reload, clean project structure. No gameplay yet.
 
+Phase 1 deliverables:
+- [ ] `apps/web/` scaffold with Vite + TypeScript + pnpm
+- [ ] Three.js + R3F integration, basic render loop
+- [ ] Hot reload verified (sub-second HMR)
+- [ ] ESLint with import boundary rules (forbidden cross-subsystem imports)
+- [ ] `src/{core,rendering,flight,terrain,procedural,shaders,ui,audio,input,hooks,utils}/` skeleton
+- [ ] Git identity fixed for future commits
+
 ## Documentation Map
 
 | File | Purpose | Owner |
