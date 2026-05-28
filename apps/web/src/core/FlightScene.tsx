@@ -44,11 +44,6 @@ export function FlightScene() {
       <Atmosphere />
       <group ref={planeRef}>
         <PlaneModel />
-        {/* Debug: red sphere to verify plane position */}
-        <mesh>
-          <sphereGeometry args={[0.5, 8, 8]} />
-          <meshBasicMaterial color="red" />
-        </mesh>
       </group>
     </>
   );
