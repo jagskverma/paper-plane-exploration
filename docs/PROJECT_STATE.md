@@ -6,11 +6,15 @@
 
 **Phase 0 — Project Governance** ✅ Complete
 
-## Current Focus
+**Next: Phase 1 — Engine Foundation**
 
-Documentation is stable. Awaiting human sign-off before Phase 1.
+## Repo
 
-## What's Done
+- **Local:** `~/projects/paper-plane-exploration`
+- **Remote:** https://github.com/jagskverma/paper-plane-exploration
+- Issues: enabled | Projects: enabled | Wiki: disabled | Visibility: public
+
+## What's Done (Phase 0)
 
 - [x] Project vision defined (VISION.md)
 - [x] Architecture fully detailed (ARCHITECTURE.md) — philosophy, principles, all subsystem designs
@@ -38,22 +42,13 @@ Documentation is stable. Awaiting human sign-off before Phase 1.
 - [x] Rapid iteration mandate (sub-second HMR, <2s shader feedback, <5s startup)
 - [x] Repository structure defined (docs/ game/ agent-prompts/ research/ benchmarks/)
 - [x] Realistic timeline estimates added to roadmap
-- [x] Repo initialized (git)
+- [x] Repo initialized and pushed to GitHub (7 commits)
 
-## What's Next
+## Next Phase
 
-- [ ] Receive additional design ideas from human
-- [ ] Create ADRs for any newly surfaced decisions
-- [ ] Lock Phase 0 — confirm docs are complete
-- [ ] Phase 1: Engine Foundation
+**Phase 1 — Engine Foundation**
 
-## Active Decisions
-
-_None yet — awaiting further input._
-
-## Blockers
-
-_None._
+Set up Vite + TypeScript + Three.js + React Three Fiber. Render loop, hot reload, clean project structure. No gameplay yet.
 
 ## Documentation Map
 
