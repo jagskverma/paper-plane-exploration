@@ -46,17 +46,20 @@
 
 ## Next Phase
 
-**Phase 1 — Engine Foundation**
+**Phase 1 — Engine Foundation** ✅ Complete
 
-Set up Vite + TypeScript + Three.js + React Three Fiber. Render loop, hot reload, clean project structure. No gameplay yet.
+**Next: Phase 2 — Flight Feel Prototype**
 
-Phase 1 deliverables:
-- [ ] `apps/web/` scaffold with Vite + TypeScript + pnpm
-- [ ] Three.js + R3F integration, basic render loop
-- [ ] Hot reload verified (sub-second HMR)
-- [ ] ESLint with import boundary rules (forbidden cross-subsystem imports)
-- [ ] `src/{core,rendering,flight,terrain,procedural,shaders,ui,audio,input,hooks,utils}/` skeleton
-- [ ] Git identity fixed for future commits
+## What's Done (Phase 1)
+
+- [x] `apps/web/` scaffold with Vite + TypeScript + pnpm
+- [x] Three.js (0.184) + React Three Fiber (9.6) + Drei (10.7) integrated
+- [x] Basic render loop: Canvas with placeholder mesh, dark background
+- [x] ESLint with `eslint-plugin-boundaries` enforcing subsystem import rules
+- [x] 11 subsystem folders: core, rendering, flight, terrain, procedural, world, shaders, ui, audio, hooks, utils
+- [x] Build passes (`tsc -b && vite build`), lint passes
+- [x] pnpm as package manager, no npm dependency
+- [x] `.gitignore` covers node_modules, dist, build artifacts
 
 ## Documentation Map
 
