@@ -13,7 +13,13 @@ Documentation is stable. Awaiting human sign-off before Phase 1.
 ## What's Done
 
 - [x] Project vision defined (VISION.md)
-- [x] Architecture decisions documented (ARCHITECTURE.md)
+- [x] Architecture fully detailed (ARCHITECTURE.md) — philosophy, principles, all subsystem designs
+- [x] Core architectural principles codified: explicitness, simplicity, local reasoning, refactorability
+- [x] Procedural generation philosophy added
+- [x] Shader architecture section added
+- [x] Dependency philosophy section added
+- [x] State management philosophy added
+- [x] Intended monorepo structure documented (apps/web, packages, prototypes)
 - [x] Development rules established (RULES.md)
 - [x] Roadmap: 22 phases with risk annotations and 5 milestones (ROADMAP.md)
 - [x] Task template standardized (TASK_TEMPLATE.md)
