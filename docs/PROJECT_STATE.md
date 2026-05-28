@@ -46,20 +46,22 @@
 
 ## Next Phase
 
-**Phase 1 — Engine Foundation** ✅ Complete
+**Phase 2 — Flight Feel Prototype** ✅ Complete
 
-**Next: Phase 2 — Flight Feel Prototype**
+**Next: Phase 3 — Atmospheric Rendering**
 
-## What's Done (Phase 1)
+## What's Done (Phase 2)
 
-- [x] `apps/web/` scaffold with Vite + TypeScript + pnpm
-- [x] Three.js (0.184) + React Three Fiber (9.6) + Drei (10.7) integrated
-- [x] Basic render loop: Canvas with placeholder mesh, dark background
-- [x] ESLint with `eslint-plugin-boundaries` enforcing subsystem import rules
-- [x] 11 subsystem folders: core, rendering, flight, terrain, procedural, world, shaders, ui, audio, hooks, utils
-- [x] Build passes (`tsc -b && vite build`), lint passes
-- [x] pnpm as package manager, no npm dependency
-- [x] `.gitignore` covers node_modules, dist, build artifacts
+- [x] Flight physics: momentum, banking, pitch-to-speed coupling, gravity, drag
+- [x] Bank-to-turn: roll angle produces yaw rate (natural glider feel)
+- [x] Input smoothing for responsive but not twitchy controls
+- [x] Input system: action-based (bank, pitch, throttle), device-agnostic
+- [x] Mouse controls bank + pitch, W/S controls throttle
+- [x] Procedural paper plane model: lowpoly, flat-shaded, no external assets
+- [x] Damped follow camera: smooth interpolation, look-ahead, height offset
+- [x] Atmosphere: gradient skydome, fog, warm lighting
+- [x] Ground reference grid for spatial awareness
+- [x] Tuneable flight params (all in FlightParams interface)
 
 ## Documentation Map
 
