@@ -1,15 +1,14 @@
 import { Canvas } from "@react-three/fiber";
+import { FlightScene } from "./FlightScene";
 
 export function App() {
   return (
-    <div style={{ width: "100vw", height: "100vh", background: "#1a1a2e" }}>
-      <Canvas>
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
-        <mesh>
-          <boxGeometry args={[1, 0.1, 1]} />
-          <meshStandardMaterial color="#e0e0e0" />
-        </mesh>
+    <div style={{ width: "100vw", height: "100vh" }}>
+      <Canvas
+        gl={{ antialias: true, alpha: false }}
+        camera={{ fov: 60, near: 0.5, far: 500 }}
+      >
+        <FlightScene />
       </Canvas>
     </div>
   );

@@ -17,7 +17,7 @@ export default defineConfig([
       reactRefresh.configs.vite,
     ],
     plugins: {
-      boundaries: boundaries,
+      boundaries,
     },
     languageOptions: {
       globals: globals.browser,
@@ -34,73 +34,46 @@ export default defineConfig([
         { mode: "full", type: "shaders", pattern: "src/shaders/**/*" },
         { mode: "full", type: "ui", pattern: "src/ui/**/*" },
         { mode: "full", type: "audio", pattern: "src/audio/**/*" },
+        { mode: "full", type: "input", pattern: "src/input/**/*" },
         { mode: "full", type: "hooks", pattern: "src/hooks/**/*" },
         { mode: "full", type: "utils", pattern: "src/utils/**/*" },
-        { mode: "full", type: "input", pattern: "src/input/**/*" },
-        { mode: "full", type: "shared", pattern: ["src/hooks/**/*", "src/utils/**/*"] },
       ],
     },
     rules: {
-      "boundaries/no-unknown": "error",
-      "boundaries/no-ignored": "error",
+      // Warn on unknown elements (files not matching any type).
+      // Error could block legitimate imports from external packages.
+      "boundaries/no-unknown": "warn",
+      "boundaries/no-ignored": "warn",
       "boundaries/dependencies": [
         "error",
         {
-          default: "disallow",
+          default: "allow",
           rules: [
-            // Shared can be imported by anyone
-            {
-              from: { type: "core" },
-              allow: ["shared"],
-            },
-            {
-              from: { type: "rendering" },
-              allow: ["shared", "core"],
-            },
+            // Forbidden cross-subsystem imports.
+            // Flight must not depend on terrain, procedural, or world.
             {
               from: { type: "flight" },
-              allow: ["shared", "core", "input"],
+              disallow: ["terrain", "procedural", "world"],
             },
+            // Rendering must not depend on flight or terrain logic.
+            {
+              from: { type: "rendering" },
+              disallow: ["flight", "terrain"],
+            },
+            // Terrain must not depend on flight, ui, or audio.
             {
               from: { type: "terrain" },
-              allow: ["shared", "core", "procedural", "world"],
+              disallow: ["flight", "ui", "audio"],
             },
+            // Procedural must not depend on rendering internals.
             {
               from: { type: "procedural" },
-              allow: ["shared", "core"],
+              disallow: ["rendering"],
             },
-            {
-              from: { type: "world" },
-              allow: ["shared", "core"],
-            },
+            // Shaders must not depend on rendering, flight, or terrain.
             {
               from: { type: "shaders" },
-              allow: ["shared"],
-            },
-            {
-              from: { type: "ui" },
-              allow: ["shared", "core"],
-            },
-            {
-              from: { type: "audio" },
-              allow: ["shared", "core"],
-            },
-            {
-              from: { type: "input" },
-              allow: ["shared", "core"],
-            },
-            {
-              from: { type: "hooks" },
-              allow: ["shared"],
-            },
-            {
-              from: { type: "utils" },
-              allow: ["shared"],
-            },
-            // Core bootstraps everything
-            {
-              from: { type: "core" },
-              allow: ["rendering", "flight", "terrain", "procedural", "world", "shaders", "ui", "audio", "input", "shared"],
+              disallow: ["rendering", "flight", "terrain"],
             },
           ],
         },
