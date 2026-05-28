@@ -9,10 +9,10 @@ export interface FlightState {
 }
 
 const BASE_SPEED = 12;
-const PITCH_RATE = 1.5; // rad/sec at full input
-const BANK_RATE = 2.5;  // rad/sec at full input
-const YAW_PER_BANK = 1.2; // yaw rate per radian of bank
-const MAX_BANK = Math.PI / 6; // 30 degrees
+const PITCH_RATE = 0.8; // rad/sec — gentle pitch
+const BANK_RATE = 1.5;  // rad/sec — smooth bank
+const YAW_PER_BANK = 0.8; // yaw rate per radian of bank
+const MAX_BANK = Math.PI / 10; // ~18 degrees — subtle tilt
 
 export class FlightController {
   private state: FlightState;
