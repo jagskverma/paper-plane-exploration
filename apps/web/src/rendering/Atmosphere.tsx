@@ -1,73 +1,33 @@
-import { useThree } from "@react-three/fiber";
-import { useEffect, useMemo } from "react";
-import * as THREE from "three";
+/* eslint-disable react-hooks/refs */
+import { useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import { SkyDome } from "./SkyDome";
+import { SunLight } from "./SunLight";
+import { HeightFog } from "./HeightFog";
+import { CloudLayer } from "./CloudLayer";
+import { FloatingParticles } from "./FloatingParticles";
 
 export function Atmosphere() {
-  const { scene } = useThree();
+  const sunAngleRef = useRef(Math.PI / 4);
 
-  useEffect(() => {
-    /* eslint-disable react-hooks/immutability */
-    scene.fog = new THREE.Fog("#6b7fa8", 30, 150);
-    scene.background = new THREE.Color("#6b7fa8");
-    /* eslint-enable react-hooks/immutability */
-    return () => {
-      /* eslint-disable react-hooks/immutability */
-      scene.fog = null;
-      scene.background = null;
-      /* eslint-enable react-hooks/immutability */
-    };
-  }, [scene]);
+  useFrame((_, delta) => {
+    sunAngleRef.current += delta * 0.02;
+    if (sunAngleRef.current > Math.PI * 2) {
+      sunAngleRef.current -= Math.PI * 2;
+    }
+  });
+
+  const sunAngle = sunAngleRef.current;
 
   return (
     <>
-      <directionalLight
-        position={[100, 30, 50]}
-        intensity={1.8}
-        color="#ffe4c4"
-      />
-      <directionalLight
-        position={[-50, 80, -30]}
-        intensity={0.4}
-        color="#a8c8ff"
-      />
-      <ambientLight intensity={0.5} color="#d0c8e0" />
-      <Skydome topColor="#3b5998" bottomColor="#f7c59f" />
+      <SkyDome sunAngle={sunAngle} />
+      <SunLight sunAngle={sunAngle} />
+      <HeightFog sunAngle={sunAngle} />
+      <CloudLayer altitude={80} radius={160} count={18} color="#ffffff" opacity={0.15} />
+      <CloudLayer altitude={50} radius={140} count={12} color="#f0e8ff" opacity={0.2} />
+      <CloudLayer altitude={20} radius={120} count={8} color="#e8e0f0" opacity={0.25} />
+      <FloatingParticles count={200} spread={100} color="#ffe8d0" size={0.3} />
     </>
-  );
-}
-
-function Skydome({
-  topColor,
-  bottomColor,
-}: {
-  topColor: string;
-  bottomColor: string;
-}) {
-  const geo = useMemo(() => {
-    const top = new THREE.Color(topColor);
-    const bottom = new THREE.Color(bottomColor);
-    const g = new THREE.SphereGeometry(200, 32, 16);
-    const colors: number[] = [];
-    const positions = g.attributes.position.array as Float32Array;
-
-    for (let i = 0; i < positions.length; i += 3) {
-      const y = positions[i + 1];
-      const t = (y / 200 + 1) / 2;
-      const color = new THREE.Color().lerpColors(bottom, top, t);
-      colors.push(color.r, color.g, color.b);
-    }
-
-    g.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
-    return g;
-  }, [topColor, bottomColor]);
-
-  return (
-    <mesh geometry={geo}>
-      <meshBasicMaterial
-        vertexColors
-        side={THREE.BackSide}
-        depthWrite={false}
-      />
-    </mesh>
   );
 }

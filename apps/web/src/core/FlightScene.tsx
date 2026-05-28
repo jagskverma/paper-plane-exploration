@@ -18,13 +18,8 @@ export function FlightScene() {
     const canvas = gl.domElement;
     const input = inputRef.current;
     input.start(canvas);
-
-    // Snap camera to initial position
     cameraRef.current.snap(flightRef.current.getState());
-
-    return () => {
-      input.stop();
-    };
+    return () => input.stop();
   }, [gl]);
 
   useFrame((_, delta) => {
@@ -32,7 +27,6 @@ export function FlightScene() {
     const flight = flightRef.current;
 
     flight.update(input, delta);
-
     const state = flight.getState();
 
     if (planeRef.current) {
@@ -51,22 +45,6 @@ export function FlightScene() {
       <group ref={planeRef}>
         <PlaneModel />
       </group>
-      <GroundGrid />
     </>
-  );
-}
-
-function GroundGrid() {
-  return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -20, 0]}>
-      <planeGeometry args={[200, 200, 40, 40]} />
-      <meshBasicMaterial
-        color="#4a6080"
-        wireframe
-        transparent
-        opacity={0.08}
-        depthWrite={false}
-      />
-    </mesh>
   );
 }
