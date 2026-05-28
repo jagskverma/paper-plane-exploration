@@ -3,23 +3,28 @@ import type { FlightInput } from "../input/FlightInput";
 
 export interface FlightState {
   position: THREE.Vector3;
-  /** Heading quaternion (yaw only — no banking). Forward = -Z. */
   rotation: THREE.Quaternion;
   speed: number;
-  bankAngle: number; // kept for camera compatibility, always 0
+  bankAngle: number;
 }
 
-const MOVE_SPEED = 15;
-const TURN_SPEED = 2.5; // rad/sec
+const BASE_SPEED = 12;
+const PITCH_RATE = 1.5; // rad/sec at full input
+const BANK_RATE = 2.5;  // rad/sec at full input
+const YAW_PER_BANK = 1.2; // yaw rate per radian of bank
+const MAX_BANK = Math.PI / 6; // 30 degrees
 
 export class FlightController {
   private state: FlightState;
 
   constructor() {
+    const q = new THREE.Quaternion();
+    // Start slightly pitched down for forward visibility
+    q.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -0.1);
     this.state = {
       position: new THREE.Vector3(0, 5, 0),
-      rotation: new THREE.Quaternion().identity(),
-      speed: MOVE_SPEED,
+      rotation: q,
+      speed: BASE_SPEED,
       bankAngle: 0,
     };
   }
@@ -37,39 +42,59 @@ export class FlightController {
     dt = Math.min(dt, 0.1);
     if (dt <= 0) return;
 
-    // Arrow Up/Down = move forward/backward
-    const forwardMove = input.throttle * MOVE_SPEED * dt; // Up arrow
-    const backwardMove = -input.pitch * MOVE_SPEED * dt;  // Down arrow (negative pitch)
+    // --- Bank (roll) ---
+    // Left/Right arrow → bank angle
+    const bankTarget = input.bank * MAX_BANK;
+    const bankDelta = THREE.MathUtils.clamp(
+      bankTarget - this.state.bankAngle, -BANK_RATE * dt, BANK_RATE * dt,
+    );
+    this.state.bankAngle += bankDelta;
 
-    // Arrow Left/Right = turn (yaw)
-    const yawDelta = input.bank * TURN_SPEED * dt; // negative bank = left turn
+    // --- Pitch ---
+    // Up/Down arrow → pitch
+    const pitchAmount = input.throttle * PITCH_RATE * dt; // Up = positive pitch
+    const downAmount = -input.pitch * PITCH_RATE * dt;    // Down = negative pitch
+    const pitchDelta = pitchAmount + downAmount;
 
-    // Apply yaw rotation
-    if (yawDelta !== 0) {
-      const yawQuat = new THREE.Quaternion().setFromAxisAngle(
-        new THREE.Vector3(0, 1, 0),
-        yawDelta,
-      );
-      this.state.rotation.multiply(yawQuat);
-      this.state.rotation.normalize();
-    }
+    // --- Yaw from bank ---
+    const yawDelta = this.state.bankAngle * YAW_PER_BANK * dt;
 
-    // Forward vector in world space
+    // Apply rotations
+    const pitchQuat = new THREE.Quaternion().setFromAxisAngle(
+      new THREE.Vector3(1, 0, 0), // local right
+      pitchDelta,
+    );
+    const bankQuat = new THREE.Quaternion().setFromAxisAngle(
+      new THREE.Vector3(0, 0, -1), // local forward
+      bankDelta,
+    );
+    const yawQuat = new THREE.Quaternion().setFromAxisAngle(
+      new THREE.Vector3(0, 1, 0), // world up (yaw uses world up for natural turning)
+      yawDelta,
+    );
+
+    this.state.rotation.multiply(yawQuat).multiply(pitchQuat).multiply(bankQuat);
+    this.state.rotation.normalize();
+
+    // --- Auto-forward movement ---
     const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(
       this.state.rotation,
     );
+    this.state.position.addScaledVector(forward, BASE_SPEED * dt);
 
-    // Total forward movement
-    const totalForward = forwardMove + backwardMove;
-    if (totalForward !== 0) {
-      this.state.position.addScaledVector(forward, totalForward);
-    }
+    // Slight lift when pitched up, slight drop when pitched down
+    const pitchAngle = Math.asin(
+      THREE.MathUtils.clamp(
+        2 * (this.state.rotation.y * this.state.rotation.w),
+        -1, 1,
+      ),
+    );
+    this.state.position.y += pitchAngle * 3 * dt;
   }
 
-  reset(position?: THREE.Vector3) {
-    this.state.position.copy(position ?? new THREE.Vector3(0, 5, 0));
+  reset(pos?: THREE.Vector3) {
+    this.state.position.copy(pos ?? new THREE.Vector3(0, 5, 0));
     this.state.rotation.identity();
-    this.state.speed = MOVE_SPEED;
     this.state.bankAngle = 0;
   }
 }
