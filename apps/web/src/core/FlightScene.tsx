@@ -43,11 +43,7 @@ export function FlightScene() {
     <>
       <Atmosphere />
       <group ref={planeRef}>
-        {/* Rotate GLB to face -Z (flight forward direction).
-            Most GLB models face +Z; this corrects orientation. */}
-        <group rotation={[0, Math.PI, 0]}>
-          <PlaneModel />
-        </group>
+        <PlaneModel />
       </group>
     </>
   );
