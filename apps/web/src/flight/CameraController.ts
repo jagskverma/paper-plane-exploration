@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import type { FlightState } from "./FlightController";
 
-const FOLLOW_DIST = 4;
-const HEIGHT_OFFSET = 1.0;
-const LOOK_AHEAD = 3;
+const FOLLOW_DIST = 8;
+const HEIGHT_OFFSET = 2.0;
+const LOOK_AHEAD = 5;
 const SMOOTHING = 5.0;
 
 /**
