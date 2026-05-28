@@ -1,92 +1,42 @@
 import * as THREE from "three";
 import type { FlightState } from "./FlightController";
 
-export interface CameraParams {
-  /** Distance behind the plane. */
-  followDistance: number;
-  /** Height offset above the plane. */
-  heightOffset: number;
-  /** How far ahead of the plane to look (smooths the view). */
-  lookAheadDistance: number;
-  /** Position smoothing — lower = snappier, higher = more lag. */
-  positionSmoothing: number;
-  /** How much bank affects camera roll (0 = horizon locked, 1 = full roll). */
-  bankInfluence: number;
-}
-
-const DEFAULT_CAMERA_PARAMS: CameraParams = {
-  followDistance: 4,
-  heightOffset: 1.0,
-  lookAheadDistance: 3,
-  positionSmoothing: 6.0,
-  bankInfluence: 0.15,
-};
+const FOLLOW_DIST = 4;
+const HEIGHT_OFFSET = 1.0;
+const LOOK_AHEAD = 3;
+const SMOOTHING = 5.0;
 
 /**
- * Damped follow camera for the paper plane.
- * Smoothly tracks position and orientation for a cinematic feel.
+ * Simple follow camera — always behind the plane, world-up aligned.
+ * No banking influence, just smooth tracking.
  */
 export class CameraController {
-  readonly params: CameraParams;
-  private currentPosition: THREE.Vector3;
-  private currentLookAt: THREE.Vector3;
+  private pos: THREE.Vector3 = new THREE.Vector3(0, 5, 4);
+  private look: THREE.Vector3 = new THREE.Vector3(0, 5, -10);
 
-  constructor(params: Partial<CameraParams> = {}) {
-    this.params = { ...DEFAULT_CAMERA_PARAMS, ...params };
-    this.currentPosition = new THREE.Vector3(0, 5, 8);
-    this.currentLookAt = new THREE.Vector3(0, 5, 0);
-  }
-
-  /**
-   * Update the camera transform based on the plane's flight state.
-   * Returns the new camera position and look-at target.
-   */
-  update(
-    flight: FlightState,
-    dt: number,
-  ): { position: THREE.Vector3; lookAt: THREE.Vector3 } {
-    const p = this.params;
+  update(flight: FlightState, dt: number) {
     dt = Math.min(dt, 0.1);
+    const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(flight.rotation);
 
-    // Forward and up in world space
-    const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(flight.rotation);
-    const up = new THREE.Vector3(0, 1, 0).applyQuaternion(flight.rotation);
+    // Camera behind the plane
+    const targetPos = flight.position.clone()
+      .addScaledVector(fwd, -FOLLOW_DIST)
+      .add(new THREE.Vector3(0, HEIGHT_OFFSET, 0));
 
-    // Target camera position: behind + above the plane
-    const targetPos = flight.position
-      .clone()
-      .addScaledVector(forward, -p.followDistance)
-      .addScaledVector(up, p.heightOffset);
+    // Look at a point ahead of the plane
+    const targetLook = flight.position.clone()
+      .addScaledVector(fwd, LOOK_AHEAD);
 
-    // Target look-at: ahead of the plane in its forward direction
-    const targetLookAt = flight.position
-      .clone()
-      .addScaledVector(forward, p.lookAheadDistance);
+    const t = 1 - Math.exp(-SMOOTHING * dt);
+    this.pos.lerp(targetPos, t);
+    this.look.lerp(targetLook, t);
 
-    // Smooth interpolation
-    const smoothFactor = 1 - Math.exp(-p.positionSmoothing * dt);
-    this.currentPosition.lerp(targetPos, smoothFactor);
-    this.currentLookAt.lerp(targetLookAt, smoothFactor);
-
-    return {
-      position: this.currentPosition.clone(),
-      lookAt: this.currentLookAt.clone(),
-    };
+    return { position: this.pos.clone(), lookAt: this.look.clone() };
   }
 
-  /** Snap camera to position (no smoothing). Use for initialization. */
   snap(flight: FlightState) {
-    const p = this.params;
-    const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(flight.rotation);
-    const up = new THREE.Vector3(0, 1, 0).applyQuaternion(flight.rotation);
-
-    this.currentPosition
-      .copy(flight.position)
-      .addScaledVector(forward, -p.followDistance)
-      .addScaledVector(up, p.heightOffset);
-
-    this.currentLookAt
-      .copy(flight.position)
-      .addScaledVector(forward, p.lookAheadDistance);
+    const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(flight.rotation);
+    this.pos.copy(flight.position).addScaledVector(fwd, -FOLLOW_DIST).add(new THREE.Vector3(0, HEIGHT_OFFSET, 0));
+    this.look.copy(flight.position).addScaledVector(fwd, LOOK_AHEAD);
   }
 }
