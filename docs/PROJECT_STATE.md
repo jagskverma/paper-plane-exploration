@@ -24,6 +24,11 @@ Documentation is stable. Awaiting human sign-off before Phase 1.
 - [x] Forbidden patterns expanded (14 items)
 - [x] Orchestration model codified (Human → Orchestrator → Agent)
 - [x] Production philosophy: Feel → Atmosphere → Traversal → Scale → Variety → Content → Polish
+- [x] "Two projects" warning — game vs pipeline, pipeline serves game
+- [x] Minimal agent setup codified (4 roles, no swarms)
+- [x] Rapid iteration mandate (sub-second HMR, <2s shader feedback, <5s startup)
+- [x] Repository structure defined (docs/ game/ agent-prompts/ research/ benchmarks/)
+- [x] Realistic timeline estimates added to roadmap
 - [x] Repo initialized (git)
 
 ## What's Next

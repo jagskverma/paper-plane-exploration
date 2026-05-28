@@ -92,6 +92,20 @@ These are the phases most likely to cause trouble:
 | 8 — Terrain Stability | 🔴 Critical | Seams, cracks, popping, memory pressure, GC spikes. Death by a thousand edge cases. |
 | 16 — Performance | 🔴 Critical | Browser profiling is unforgiving. Easy to optimize the wrong thing. Must be data-driven. |
 
+## Realistic Timeline Estimates
+
+These are approximate — not deadlines, but expectations to guard against "why isn't this done yet" panic:
+
+| Stage | Approximate | Notes |
+|-------|-------------|-------|
+| Fun flight prototype (Phases 1–3) | 1–3 weeks | Iteration-heavy. Feel tuning takes time. |
+| Stable spherical traversal (Phases 4–5) | 2–6 weeks | Coordinate systems are finicky. |
+| Good terrain architecture (Phases 6–8) | 1–3 months | This is The Monster. Most common death zone. |
+| Convincing atmosphere | Ongoing | Continuously refined across all phases. |
+| "Feels like a real game" (Phases 13+) | Several months | Depends heavily on foundation quality. |
+
+The project should never enter "months of infrastructure building." A runnable prototype must exist at all times. Visible progress and emotional feedback protect motivation.
+
 ---
 
 ## Phase Details

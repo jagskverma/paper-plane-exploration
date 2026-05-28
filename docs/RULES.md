@@ -38,6 +38,18 @@ No long infrastructure-only phases. No giant one-shot implementations.
 
 Beautiful flight in atmospheric empty space. If this isn't achieved, terrain and content work does not begin.
 
+### Rapid Iteration Mandate
+
+The development setup must optimize for rapid experimentation. If iteration becomes slow, motivation dies.
+
+Requirements:
+- Instant hot-reload (Vite HMR — sub-second feedback)
+- Tiny iteration loops (change shader → see result in <2 seconds)
+- Quick playtesting (startup-to-flight in <5 seconds)
+- No build-step friction during development
+
+Any tooling, architecture, or workflow decision that slows the edit→preview loop is a regression. Fast iteration protects motivation and enables the feel-tuning that this project depends on.
+
 ---
 
 ## Forbidden Engineering Patterns
@@ -85,6 +97,31 @@ Agents tend to tightly couple things. Fight this aggressively. Each subsystem co
 ---
 
 ## AI Agent Rules
+
+### You Are Building TWO Projects
+
+Most people miss this. You are actually building:
+
+**Project A** — The game (paper plane, atmosphere, world, feeling).
+
+**Project B** — The AI-assisted development pipeline (orchestration, agents, reviews, task specs).
+
+Project B can consume infinite time if unmanaged. The pipeline exists to serve the game — never the reverse. If pipeline infrastructure work exceeds game work, something is wrong.
+
+### Keep the Agent System Simple
+
+Do NOT overbuild the agent system early. You do not need autonomous swarms, optimization loops, 15 subagents, or self-improving architecture in week 1. That becomes building infrastructure instead of game — a very common failure mode.
+
+Initial setup should be minimal:
+
+| Role | Performer |
+|------|-----------|
+| Vision | Human |
+| Orchestration | Orchestrator (me) |
+| Coding | One Builder Agent |
+| Review | One Reviewer Agent |
+
+That is enough for quite a while. Add complexity only when the current setup demonstrably cannot keep up.
 
 ### The Orchestration Model
 

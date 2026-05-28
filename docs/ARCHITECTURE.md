@@ -9,6 +9,30 @@
 
 Browser-native, client-side only. No mandatory backend or server dependency.
 
+## Repository Structure
+
+```
+paper-plane-exploration/
+├── README.md
+├── docs/                    # Project governance (this is Phase 0 material)
+│   ├── VISION.md
+│   ├── ARCHITECTURE.md
+│   ├── RULES.md
+│   ├── ROADMAP.md
+│   ├── TASK_TEMPLATE.md
+│   ├── PROJECT_STATE.md
+│   └── decisions/           # Architecture Decision Records
+├── game/                    # Game source (Phase 1+)
+│   ├── src/
+│   ├── public/
+│   └── package.json
+├── agent-prompts/           # Curated agent task prompts (Phase 1+)
+├── research/                # Experiments, spikes, reference material
+└── benchmarks/              # Performance baselines (Phase 16+)
+```
+
+Directories are created as needed, not all at once.
+
 ## Platform Strategy
 
 | Phase | Target |
