@@ -8,13 +8,12 @@ import { CloudLayer } from "./CloudLayer";
 import { FloatingParticles } from "./FloatingParticles";
 
 export function Atmosphere() {
-  const sunAngleRef = useRef(Math.PI / 4);
+  // Fixed mid-day sun angle — blue sky
+  const sunAngleRef = useRef(Math.PI / 2.5); // ~72°, bright blue sky
 
   useFrame((_, delta) => {
-    sunAngleRef.current += delta * 0.02;
-    if (sunAngleRef.current > Math.PI * 2) {
-      sunAngleRef.current -= Math.PI * 2;
-    }
+    // Very slow drift for subtle variation
+    sunAngleRef.current += delta * 0.005;
   });
 
   const sunAngle = sunAngleRef.current;
@@ -25,43 +24,20 @@ export function Atmosphere() {
       <SunLight sunAngle={sunAngle} />
       <HeightFog sunAngle={sunAngle} />
 
-      {/* High-altitude clouds — scattered across the sky */}
-      <CloudLayer
-        altitude={90}
-        radius={180}
-        count={60}
-        color="#f8faff"
-        opacity={0.35}
-        puffSize={20}
-      />
+      {/* Low scattered clouds */}
+      <CloudLayer altitude={30} radius={130} count={30}
+        color="#ffffff" opacity={0.5} puffSize={25} />
 
-      {/* Mid-altitude clouds — more substantial */}
-      <CloudLayer
-        altitude={55}
-        radius={150}
-        count={50}
-        color="#eef0ff"
-        opacity={0.4}
-        puffSize={18}
-      />
+      {/* Mid cloud layer */}
+      <CloudLayer altitude={60} radius={150} count={25}
+        color="#f8faff" opacity={0.4} puffSize={30} />
 
-      {/* Low clouds — closer, more visible */}
-      <CloudLayer
-        altitude={25}
-        radius={120}
-        count={40}
-        color="#e0e4f8"
-        opacity={0.35}
-        puffSize={14}
-      />
+      {/* High wispy clouds */}
+      <CloudLayer altitude={100} radius={180} count={20}
+        color="#eef2ff" opacity={0.3} puffSize={35} />
 
-      {/* Atmospheric particles for depth */}
-      <FloatingParticles
-        count={300}
-        spread={120}
-        color="#ffe8d0"
-        size={0.25}
-      />
+      {/* Depth particles */}
+      <FloatingParticles count={200} spread={100} color="#ffffff" size={0.3} />
     </>
   );
 }

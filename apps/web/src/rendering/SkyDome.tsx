@@ -9,9 +9,9 @@ export function SkyDome({ sunAngle }: SkyParams) {
   const geo = useMemo(() => {
     const g = new THREE.SphereGeometry(200, 48, 24);
 
-    const zenithColor = new THREE.Color("#2c3e80");
-    const horizonColor = new THREE.Color("#f4a460");
-    const nadirColor = new THREE.Color("#3a3a5c"); // soft dark, not black
+    const zenithColor = new THREE.Color("#4488cc"); // bright blue sky
+    const horizonColor = new THREE.Color("#aaccff"); // pale blue horizon
+    const nadirColor = new THREE.Color("#334466"); // deep blue below
 
     const t = Math.max(0, Math.min(1, sunAngle / (Math.PI / 2)));
     const skyZenith = new THREE.Color().lerpColors(

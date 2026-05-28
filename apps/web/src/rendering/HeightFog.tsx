@@ -15,8 +15,8 @@ export function HeightFog({ sunAngle }: HeightFogParams) {
   if (!setupDone.current) {
     const sunHeight = Math.sin(sunAngle);
     const fogColor = new THREE.Color().lerpColors(
-      new THREE.Color("#ffe4c4"),
-      new THREE.Color("#b0c8e8"),
+      new THREE.Color("#aaccff"), // light blue fog
+      new THREE.Color("#6699cc"), // deeper blue fog
       Math.max(0.1, sunHeight * 0.7 + 0.3),
     );
 

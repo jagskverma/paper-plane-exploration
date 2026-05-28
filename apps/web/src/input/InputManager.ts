@@ -25,8 +25,9 @@ export class InputManager {
   };
 
   private updateState() {
+    // Up = nose up (throttle), Down = nose down (pitch)
     this.state.throttle = this.keys.has("ArrowUp") ? 1 : 0;
-    this.state.pitch = this.keys.has("ArrowDown") ? -1 : 0;
+    this.state.pitch = this.keys.has("ArrowDown") ? 1 : 0;
     this.state.bank = 0;
     if (this.keys.has("ArrowLeft")) this.state.bank = -1;
     if (this.keys.has("ArrowRight")) this.state.bank = 1;

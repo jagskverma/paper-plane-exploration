@@ -51,10 +51,8 @@ export class FlightController {
     this.state.bankAngle += bankDelta;
 
     // --- Pitch ---
-    // Up/Down arrow → pitch
-    const pitchAmount = input.throttle * PITCH_RATE * dt; // Up = positive pitch
-    const downAmount = -input.pitch * PITCH_RATE * dt;    // Down = negative pitch
-    const pitchDelta = pitchAmount + downAmount;
+    // ArrowUp (throttle) = nose up, ArrowDown (pitch) = nose down
+    const pitchDelta = (input.throttle - input.pitch) * PITCH_RATE * dt;
 
     // --- Yaw from bank ---
     const yawDelta = this.state.bankAngle * YAW_PER_BANK * dt;
