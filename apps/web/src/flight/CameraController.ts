@@ -15,11 +15,11 @@ export interface CameraParams {
 }
 
 const DEFAULT_CAMERA_PARAMS: CameraParams = {
-  followDistance: 6,
-  heightOffset: 1.5,
-  lookAheadDistance: 4,
-  positionSmoothing: 4.0,
-  bankInfluence: 0.25,
+  followDistance: 4,
+  heightOffset: 1.0,
+  lookAheadDistance: 3,
+  positionSmoothing: 6.0,
+  bankInfluence: 0.15,
 };
 
 /**

@@ -8,11 +8,9 @@ import { CloudLayer } from "./CloudLayer";
 import { FloatingParticles } from "./FloatingParticles";
 
 export function Atmosphere() {
-  // Fixed mid-day sun angle — blue sky
-  const sunAngleRef = useRef(Math.PI / 2.5); // ~72°, bright blue sky
+  const sunAngleRef = useRef(Math.PI / 2.5);
 
   useFrame((_, delta) => {
-    // Very slow drift for subtle variation
     sunAngleRef.current += delta * 0.005;
   });
 
@@ -24,19 +22,24 @@ export function Atmosphere() {
       <SunLight sunAngle={sunAngle} />
       <HeightFog sunAngle={sunAngle} />
 
-      {/* Low scattered clouds — fly right through them */}
-      <CloudLayer altitude={40} radius={100} count={25}
-        color="#f0f4ff" opacity={0.3} />
+      {/* Low clouds */}
+      <CloudLayer
+        altitude={35} radius={100} clusters={15} spheresPerCluster={6}
+        color="#f4f8ff" opacity={0.2} maxScale={15}
+      />
 
-      {/* Mid cloud layer — visible above */}
-      <CloudLayer altitude={80} radius={120} count={20}
-        color="#e8f0ff" opacity={0.35} />
+      {/* Mid clouds */}
+      <CloudLayer
+        altitude={70} radius={130} clusters={12} spheresPerCluster={8}
+        color="#f0f6ff" opacity={0.25} maxScale={20}
+      />
 
-      {/* High cloud layer — clearly in the sky */}
-      <CloudLayer altitude={130} radius={150} count={15}
-        color="#e0ecff" opacity={0.4} />
+      {/* High clouds */}
+      <CloudLayer
+        altitude={120} radius={160} clusters={8} spheresPerCluster={10}
+        color="#ecf4ff" opacity={0.3} maxScale={25}
+      />
 
-      {/* Depth particles */}
       <FloatingParticles count={200} spread={100} color="#ffffff" size={0.3} />
     </>
   );
