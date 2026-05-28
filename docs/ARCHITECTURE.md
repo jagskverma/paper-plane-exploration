@@ -64,6 +64,22 @@ Stay aware of: draw call limits, browser memory pressure, WebGL limitations, sha
 
 But: premature optimization avoided.
 
+## Subsystem Boundaries
+
+The project is organized into isolated subsystems. Each communicates through explicit, documented interfaces — never through shared mutable state or implicit dependencies.
+
+| Subsystem | Responsibility | Interface |
+|-----------|---------------|-----------|
+| Rendering | Three.js/R3F scene, materials, shaders, postprocessing | Receives scene state, emits frames |
+| Flight | Paper plane movement, physics, camera | Receives input actions, emits transform |
+| Input | Action abstraction over keyboard/controller/touch | Emits action events |
+| Terrain | Cube-sphere generation, chunk streaming, LOD | Emits geometry + collision data |
+| Atmosphere | Sky, fog, lighting, color grading | Receives world state, modifies scene |
+| Audio | Spatial audio, ambient, music | Receives events, emits nothing |
+| UI | HUD, menus, overlays | Receives game state, renders 2D |
+
+Agents must respect these boundaries. Tight coupling is a review rejection reason.
+
 ## Performance Stance
 
 Optimization is deferred until systems stabilize, rendering pipeline matures, and terrain architecture solidifies. Early development prioritizes experimentation, emotional quality, and architecture validation.
