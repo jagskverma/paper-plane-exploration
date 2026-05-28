@@ -21,7 +21,10 @@ Documentation is stable. Awaiting human sign-off before Phase 1.
 - [x] State management philosophy added
 - [x] Intended monorepo structure documented (apps/web, packages, prototypes)
 - [x] Development rules established (RULES.md)
-- [x] Roadmap: 22 phases with risk annotations and 5 milestones (ROADMAP.md)
+- [x] Roadmap: 22 phases with detailed descriptions, risk annotations, and 5 milestones (ROADMAP.md)
+- [x] Per-phase detail format: Goal, Focus, Success Criteria, Avoid for every phase
+- [x] Roadmap philosophy: directional not temporal, iterative vertical slices
+- [x] Guiding principle: "Does this improve the emotional flying experience?"
 - [x] Task template standardized (TASK_TEMPLATE.md)
 - [x] ADR system initialized (docs/decisions/)
 - [x] ADR-001: Cube-sphere topology decision recorded
