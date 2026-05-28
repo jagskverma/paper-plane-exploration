@@ -37,6 +37,9 @@ pnpm-debug.log*
 # Test coverage
 coverage/
 
+# Downloaded assets (reviewed manually, not in repo)
+assets/
+
 # Prototype / research artifacts (keep in research/, not tracked)
 research/output/
 research/build/
