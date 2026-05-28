@@ -6,6 +6,8 @@ import { CameraController } from "../flight/CameraController";
 import { PlaneModel } from "../flight/PlaneModel";
 import { InputManager } from "../input/InputManager";
 import { Atmosphere } from "../rendering/Atmosphere";
+import { Planet } from "../world/Planet";
+import { flightControllerRef } from "./flightRef";
 
 export function FlightScene() {
   const flightRef = useRef<FlightController>(new FlightController());
@@ -18,8 +20,12 @@ export function FlightScene() {
     const canvas = gl.domElement;
     const input = inputRef.current;
     input.start(canvas);
+    flightControllerRef.current = flightRef.current;
     cameraRef.current.snap(flightRef.current.getState());
-    return () => input.stop();
+    return () => {
+      input.stop();
+      flightControllerRef.current = null;
+    };
   }, [gl]);
 
   useFrame((_, delta) => {
@@ -42,6 +48,7 @@ export function FlightScene() {
   return (
     <>
       <Atmosphere />
+      <Planet />
       <group ref={planeRef}>
         <PlaneModel />
       </group>

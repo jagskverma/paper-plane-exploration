@@ -7,7 +7,7 @@ interface SkyParams {
 
 export function SkyDome({ sunAngle }: SkyParams) {
   const geo = useMemo(() => {
-    const g = new THREE.SphereGeometry(200, 48, 24);
+    const g = new THREE.SphereGeometry(1200, 48, 24);
 
     const zenithColor = new THREE.Color("#4488cc"); // bright blue sky
     const horizonColor = new THREE.Color("#aaccff"); // pale blue horizon
@@ -25,13 +25,13 @@ export function SkyDome({ sunAngle }: SkyParams) {
 
     for (let i = 0; i < positions.length; i += 3) {
       const y = positions[i + 1];
-      const normalizedY = (y / 200 + 1) / 2;
+      const normalizedY = (y / 1200 + 1) / 2;
 
       let color: THREE.Color;
       if (y > 0) {
         color = new THREE.Color().lerpColors(horizonColor, skyZenith, normalizedY);
       } else {
-        const belowT = Math.abs(y) / 200;
+        const belowT = Math.abs(y) / 1200;
         color = new THREE.Color().lerpColors(horizonColor, nadirColor, belowT);
       }
       colors.push(color.r, color.g, color.b);
