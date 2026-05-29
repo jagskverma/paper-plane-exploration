@@ -4,7 +4,7 @@
 
 ## Current Phase
 
-**Phase 5 — Planet Topology & Coordinate Systems** ← current
+**Phase 6 — Terrain Architecture Research** ← current
 
 ## Repo
 
@@ -51,16 +51,22 @@
 - [x] Lift = gravity (stable altitude at 60m)
 - [x] Debug HUD (altitude/speed/position)
 
-## Phase 5 — Planet Topology (next)
+## Phase 5 — Planet Topology & Coordinate Systems ✅
 
-Based on research of `dgreenheck/threejs-procedural-planets`:
-- Replace UV sphere with cube-sphere mesh
-- Vertex displacement via multi-octave noise shader
-- Height-based color bands
-- Atmosphere particle system around planet
+- [x] Cube-sphere planet (6 faces, 48×48 resolution, R=4000)
+- [x] GLSL simplex 3D noise + FBM (6 octaves) in vertex shader
+- [x] Height-based color bands (deep blue → green → gray → white)
+- [x] Diffuse lighting on terrain
+- [x] Terrain amplitude: 150m (below 200m flight ceiling)
+- [x] Flight altitude: 200m, min altitude: 50m
+- [x] No clipping — plane safely above terrain peaks
+- [x] Debug HUD shows altitude, distance, rotation, position
+- [x] Researched `dgreenheck/threejs-procedural-planets` for patterns
 
-## Phase 6+ (future)
+## Phase 6 — Terrain Architecture Research (next)
 
-- Terrain architecture research
-- Terrain streaming MVP (chunks, LOD)
-- Biome systems, water, weather, landmarks
+- Research scalable procedural terrain, chunk streaming, LOD
+- Plan cube-sphere terrain architecture
+- Memory management strategy
+
+## Phase 7+ (future)
