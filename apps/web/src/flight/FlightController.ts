@@ -74,7 +74,7 @@ export class FlightController {
     if (this.state.altitude >= MIN_ALTITUDE) {
       this.state.position.addScaledVector(toCenter, GRAVITY * dt);
       // Simple lift to balance gravity at level flight
-      const liftForce = GRAVITY * 0.95; // slightly less than gravity → gentle sink
+      const liftForce = GRAVITY; // exactly balances gravity — stable level flight
       this.state.position.addScaledVector(normal, liftForce * dt);
     }
 

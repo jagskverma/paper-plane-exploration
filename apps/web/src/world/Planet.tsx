@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import * as THREE from "three";
 
-const PLANET_RADIUS = 800;
+const PLANET_RADIUS = 4000;
 
 /**
  * Simple spherical planet — solid color with a wireframe overlay

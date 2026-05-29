@@ -8,7 +8,7 @@ export function App() {
     <div style={{ width: "100vw", height: "100vh" }}>
       <Canvas
         gl={{ antialias: true, alpha: false }}
-        camera={{ fov: 60, near: 1, far: 5000 }}
+        camera={{ fov: 60, near: 1, far: 20000 }}
       >
         <FlightScene />
       </Canvas>
