@@ -82,6 +82,8 @@ Purpose: correct the feel target before scaling terrain architecture. The game s
 - [x] Replaced problematic paper-plane GLB with procedural geometry
 - [x] Mesh-anchored scale-test assets to the rendered cube-sphere terrain surface
 - [x] Added coarse placeholder collision volumes for scale-test trees, bushes, and rocks
+- [x] Retuned collision response so trees act as blockers, not just resistance
+- [x] Changed placeholder collisions to multi-part simple shapes: narrow tree trunks, canopy spheres, and small prop spheres
 - [ ] Playtest flying between terrain objects before terrain streaming
 
 Available local asset library is documented in `docs/references/ASSET_LIBRARY.md`.

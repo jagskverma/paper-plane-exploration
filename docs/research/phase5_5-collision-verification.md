@@ -4,36 +4,38 @@
 
 ## How Collision Works
 
-`FlightController.resolveObstacleCollisions()` (line 187-208):
+`FlightController.resolveObstacleCollisions()`:
 
 1. Defines plane collision radius: `planeRadius = 0.8`
 2. Iterates all obstacles set via `setCollisionObstacles()`
-3. For each: `distance = |planePos - obstacle.center|`
+3. For each obstacle, finds the closest collision point:
+   - sphere obstacles use their center
+   - capsule obstacles use the closest point on their terrain-normal-aligned segment
 4. If `distance < obstacle.radius + planeRadius`:
    - Pushes plane position away along offset direction to exactly `minDistance`
-   - Reduces speed to `max(MIN_SPEED, speed * 0.45)` (~45% speed on hit)
+   - Removes the current heading component into the obstacle
+   - Applies a short collision cooldown
+   - Holds speed at `MIN_SPEED` during that cooldown
 
 Obstacle centers come from `getScaleTestCollisionObstacles()` in `ScaleTestPlacements.ts`:
-- Each obstacle center = surface point + `surfaceNormal * collisionHeight * 0.5`
-- Radius = `placement.collisionRadius`
+- Tree obstacles are split into narrow trunk capsules plus canopy spheres.
+- Bushes and rocks use small sphere obstacles.
 
 ## Per-Object Analysis
 
-| Object | CollisionHeight | CollisionRadius | Sphere top (AGL) | Plane at 12m AGL |
-|--------|----------------|-----------------|-------------------|-------------------|
-| Pine tree (z=-50) | 15m | 4.5m | 15m AGL | **Will collide** (12m < 15m) |
-| Broad tree (z=-68) | 13m | 5.5m | 13m AGL | **Will collide** (12m < 13m) |
-| Bush (z=-88) | 2.5m | 3m | 2.5m AGL | Pass over (12m > 2.5m + 3m) |
-| Small rock (z=-112) | 3m | 2m | 3m AGL | Pass over |
-| Bush (z=-228) | 2.8m | 3.2m | 2.8m AGL | Pass over |
-| All other trees | 13-15m | 3.5-5.5m | 13-15m AGL | **Will collide** |
+| Object | Collision Shape | Intent |
+|--------|-----------------|--------|
+| Pine tree | narrow trunk capsule + canopy sphere | Allows under-canopy flight gaps while blocking visible trunk/canopy mass |
+| Broad tree | narrow trunk capsule + canopy sphere | Allows under-canopy flight gaps while blocking visible trunk/canopy mass |
+| Bush | small sphere | Blocks only near visible bush volume |
+| Small rock | small sphere | Blocks only near visible rock volume |
 
 ## Findings
 
 1. **Trees DO block the plane.** With collision heights of 13-15m and flight altitude of 12m AGL, pine and broad trees extend above the flight path.
 2. **Bushes and rocks do NOT block.** Their collision heights (2.5-3m) are well below 12m AGL.
-3. **Collision response is a hard push + speed drop.** The plane is pushed radially outward from the obstacle and speed drops to 45%. This feels like a "bump."
-4. **No vertical obstacle check.** The collision is spherical (radial), not cylindrical. A plane at 12m AGL flying directly over a tree trunk at 0m AGL would still collide if within the horizontal radius, even though the trunk is below. Since trees have collisionRadius 3.5-5.5m and the sphere center is at 7.5m AGL (half of 15m), the sphere extends from 2m to 13m AGL — so horizontal approach at 12m will indeed collide.
+3. **Collision response is a hard push + temporary blocker.** The plane is pushed outward, speed is held at minimum briefly, and heading into the obstacle is removed so the plane cannot simply creep through after resistance.
+4. **Tree collision is multi-part.** A single tall capsule blocked under-canopy space too aggressively. Trees now use narrow trunk capsules and canopy spheres, closer to the visible asset shape.
 
 ## Bug Found
 
@@ -48,6 +50,12 @@ center: transform.position.addScaledVector(
 
 This modifies `transform.position` in-place, which means subsequent calls to `scaleTestPlacementTransform()` for the SAME placement would get an already-offset position. This is a subtle shared-state bug. The fix is to clone before mutating.
 
+## Follow-Up Fix
+
+After playtesting, the old response was found to create resistance but still allow the plane to creep through the obstacle. `FlightController` now removes heading into the obstacle and applies a short collision cooldown. This is still a coarse Phase 5.5 placeholder, not a final collision system.
+
+After further playtesting, spherical tree obstacles were also found to miss visible canopies near the top of the tree. Collision obstacles were changed to terrain-normal-aligned capsule/segment blockers. A later pass found that single tall capsules blocked under-canopy flight too aggressively, so tree collision now uses narrow trunk capsules plus canopy spheres.
+
 ## Recommendation
 
-Collision works correctly for trees. The system is adequate for Phase 5.5. Fix the shared-state mutation bug.
+Collision is now adequate for Phase 5.5 tree fly-through testing. Bushes and rocks remain low obstacles that the plane can pass over at normal 12m AGL cruise, which is acceptable unless the design goal changes to make them hazards.

@@ -15,8 +15,6 @@ export interface ScaleTestPlacement {
   z: number;
   scale: number;
   yaw: number;
-  collisionRadius: number;
-  collisionHeight: number;
 }
 
 const START_UP = new THREE.Vector3(0, 1, 0);
@@ -31,8 +29,6 @@ export const SCALE_TEST_PLACEMENTS: ScaleTestPlacement[] = [
     z: -50,
     scale: 8.0,
     yaw: 0.2,
-    collisionRadius: 4.5,
-    collisionHeight: 15,
   },
   {
     asset: "/scale-test-assets/tree.glb",
@@ -40,8 +36,6 @@ export const SCALE_TEST_PLACEMENTS: ScaleTestPlacement[] = [
     z: -68,
     scale: 0.04,
     yaw: 1.1,
-    collisionRadius: 5.5,
-    collisionHeight: 13,
   },
   {
     asset: "/scale-test-assets/bush.glb",
@@ -49,8 +43,6 @@ export const SCALE_TEST_PLACEMENTS: ScaleTestPlacement[] = [
     z: -88,
     scale: 26.0,
     yaw: 2.1,
-    collisionRadius: 3,
-    collisionHeight: 2.5,
   },
   {
     asset: "/scale-test-assets/small-rock.glb",
@@ -58,8 +50,6 @@ export const SCALE_TEST_PLACEMENTS: ScaleTestPlacement[] = [
     z: -112,
     scale: 13.0,
     yaw: 0.5,
-    collisionRadius: 3,
-    collisionHeight: 2.5,
   },
   {
     asset: "/scale-test-assets/pine-tree.glb",
@@ -67,8 +57,6 @@ export const SCALE_TEST_PLACEMENTS: ScaleTestPlacement[] = [
     z: -150,
     scale: 8.5,
     yaw: 2.8,
-    collisionRadius: 4.8,
-    collisionHeight: 16,
   },
   {
     asset: "/scale-test-assets/tree.glb",
@@ -76,8 +64,6 @@ export const SCALE_TEST_PLACEMENTS: ScaleTestPlacement[] = [
     z: -188,
     scale: 0.04,
     yaw: 1.7,
-    collisionRadius: 5.5,
-    collisionHeight: 13,
   },
   {
     asset: "/scale-test-assets/bush.glb",
@@ -85,8 +71,6 @@ export const SCALE_TEST_PLACEMENTS: ScaleTestPlacement[] = [
     z: -228,
     scale: 28.0,
     yaw: 0.9,
-    collisionRadius: 3.2,
-    collisionHeight: 2.8,
   },
 ];
 
@@ -107,16 +91,60 @@ export function scaleTestPlacementTransform(placement: ScaleTestPlacement) {
 }
 
 export function getScaleTestCollisionObstacles(): FlightCollisionObstacle[] {
-  return SCALE_TEST_PLACEMENTS.map((placement) => {
+  return SCALE_TEST_PLACEMENTS.flatMap((placement) => {
     const transform = scaleTestPlacementTransform(placement);
     const surfaceNormal = transform.position.clone().normalize();
-    const center = transform.position.clone().addScaledVector(
-      surfaceNormal,
-      placement.collisionHeight * 0.5,
-    );
-    return {
-      center,
-      radius: placement.collisionRadius,
-    };
+    const heightScale = placement.asset === "/scale-test-assets/tree.glb"
+      ? 509.086 * placement.scale
+      : placement.asset === "/scale-test-assets/pine-tree.glb"
+        ? 2.586 * placement.scale
+        : placement.asset === "/scale-test-assets/bush.glb"
+          ? 0.172 * placement.scale
+          : 0.375 * placement.scale;
+
+    if (placement.asset === "/scale-test-assets/pine-tree.glb") {
+      return [
+        {
+          kind: "capsule",
+          base: transform.position.clone(),
+          up: surfaceNormal,
+          radius: 0.55,
+          height: heightScale * 0.42,
+        },
+        {
+          kind: "sphere",
+          base: transform.position.clone().addScaledVector(surfaceNormal, heightScale * 0.7),
+          up: surfaceNormal,
+          radius: 3.4,
+        },
+      ];
+    }
+
+    if (placement.asset === "/scale-test-assets/tree.glb") {
+      return [
+        {
+          kind: "capsule",
+          base: transform.position.clone(),
+          up: surfaceNormal,
+          radius: 0.45,
+          height: heightScale * 0.55,
+        },
+        {
+          kind: "sphere",
+          base: transform.position.clone().addScaledVector(surfaceNormal, heightScale * 0.72),
+          up: surfaceNormal,
+          radius: 4.2,
+        },
+      ];
+    }
+
+    return [
+      {
+        kind: "sphere",
+        base: transform.position.clone().addScaledVector(surfaceNormal, heightScale * 0.5),
+        up: surfaceNormal,
+        radius: placement.asset === "/scale-test-assets/bush.glb" ? 2.4 : 2.6,
+      },
+    ];
   });
 }

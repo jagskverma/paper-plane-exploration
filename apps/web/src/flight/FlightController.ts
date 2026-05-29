@@ -15,7 +15,7 @@ export interface FlightState {
   pitchAngle: number;
 }
 
-const BASE_SPEED = 7.5;
+const BASE_SPEED = 9.0;
 const MIN_SPEED = 4.0;
 const MAX_SPEED = 12.0;
 const SPEED_RESPONSE = 1.8;
@@ -23,16 +23,19 @@ const GLIDE_SINK_RATE = 0;
 const MAX_PITCH_ANGLE = THREE.MathUtils.degToRad(22);
 const PITCH_RESPONSE = 5.0;
 const PITCH_RETURN_RESPONSE = 3.5;
-const MAX_BANK_ANGLE = THREE.MathUtils.degToRad(35);
+const MAX_BANK_ANGLE = THREE.MathUtils.degToRad(42);
 const BANK_RESPONSE = 6.0;
 const BANK_RETURN_RESPONSE = 4.0;
-const BANK_TURN_RATE = 0.7;
+const BANK_TURN_RATE = 0.84;
 
 export type TerrainHeightSampler = (surfaceNormal: THREE.Vector3) => number;
 
 export interface FlightCollisionObstacle {
-  center: THREE.Vector3;
+  kind: "sphere" | "capsule";
+  base: THREE.Vector3;
+  up: THREE.Vector3;
   radius: number;
+  height?: number;
 }
 
 function buildSurfaceAlignedRotation(
@@ -62,6 +65,7 @@ export class FlightController {
   private state: FlightState;
   private getTerrainHeight: TerrainHeightSampler;
   private collisionObstacles: FlightCollisionObstacle[] = [];
+  private collisionCooldown = 0;
 
   constructor(getTerrainHeight: TerrainHeightSampler = () => 0) {
     this.getTerrainHeight = getTerrainHeight;
@@ -81,8 +85,11 @@ export class FlightController {
 
   setCollisionObstacles(obstacles: FlightCollisionObstacle[]) {
     this.collisionObstacles = obstacles.map((obstacle) => ({
-      center: obstacle.center.clone(),
+      kind: obstacle.kind,
+      base: obstacle.base.clone(),
+      up: obstacle.up.clone().normalize(),
       radius: obstacle.radius,
+      height: obstacle.height,
     }));
   }
 
@@ -100,6 +107,7 @@ export class FlightController {
   update(input: FlightInput, dt: number) {
     dt = Math.min(dt, 0.1);
     if (dt <= 0) return;
+    this.collisionCooldown = Math.max(0, this.collisionCooldown - dt);
 
     // --- Planet-relative ---
     const normal = this.state.position.clone().normalize();
@@ -127,8 +135,9 @@ export class FlightController {
       pitchT,
     );
 
+    const cruiseSpeed = this.collisionCooldown > 0 ? MIN_SPEED : BASE_SPEED;
     const targetSpeed = THREE.MathUtils.clamp(
-      BASE_SPEED - pitchInput * 2.5,
+      cruiseSpeed - pitchInput * 2.5,
       MIN_SPEED,
       MAX_SPEED,
     );
@@ -171,7 +180,7 @@ export class FlightController {
       this.state.altitude = newAlt;
     }
 
-    this.resolveObstacleCollisions();
+    this.resolveObstacleCollisions(heading);
 
     const surfaceUp = this.state.position.clone().normalize();
     heading.addScaledVector(surfaceUp, -heading.dot(surfaceUp)).normalize();
@@ -184,11 +193,12 @@ export class FlightController {
     );
   }
 
-  private resolveObstacleCollisions() {
+  private resolveObstacleCollisions(heading: THREE.Vector3) {
     const planeRadius = 0.8;
 
     for (const obstacle of this.collisionObstacles) {
-      const offset = this.state.position.clone().sub(obstacle.center);
+      const closestPoint = this.closestObstaclePoint(obstacle);
+      const offset = this.state.position.clone().sub(closestPoint);
       const minDistance = obstacle.radius + planeRadius;
       const distanceSq = offset.lengthSq();
 
@@ -201,10 +211,29 @@ export class FlightController {
       }
 
       this.state.position.copy(
-        obstacle.center.clone().addScaledVector(offset, minDistance),
+        closestPoint.addScaledVector(offset, minDistance),
       );
-      this.state.speed = Math.max(MIN_SPEED, this.state.speed * 0.45);
+      const intoObstacle = heading.dot(offset) < 0;
+      if (intoObstacle) {
+        heading.addScaledVector(offset, -heading.dot(offset)).normalize();
+      }
+      this.collisionCooldown = 0.45;
+      this.state.speed = MIN_SPEED;
     }
+  }
+
+  private closestObstaclePoint(obstacle: FlightCollisionObstacle) {
+    if (obstacle.kind === "sphere") {
+      return obstacle.base.clone();
+    }
+
+    const baseToPlane = this.state.position.clone().sub(obstacle.base);
+    const axisDistance = THREE.MathUtils.clamp(
+      baseToPlane.dot(obstacle.up),
+      0,
+      obstacle.height ?? 0,
+    );
+    return obstacle.base.clone().addScaledVector(obstacle.up, axisDistance);
   }
 
   reset() {

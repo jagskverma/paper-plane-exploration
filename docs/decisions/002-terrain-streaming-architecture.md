@@ -1,7 +1,7 @@
 # ADR-002: Terrain streaming architecture
 
 Date: 2026-05-29
-Status: proposed
+Status: accepted
 
 ## Context
 
