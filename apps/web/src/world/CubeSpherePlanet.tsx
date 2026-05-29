@@ -187,7 +187,7 @@ export function CubeSpherePlanet() {
 
   const uniforms = useMemo(
     () => ({
-      uAmplitude: { value: 600 },
+      uAmplitude: { value: 150 },  // terrain variation ±150m (below 60m flight altitude)
       uFrequency: { value: 0.0004 },
       uOctaves: { value: 6 },
       uLacunarity: { value: 2.0 },
