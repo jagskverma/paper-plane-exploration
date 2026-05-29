@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import type { FlightInput } from "../input/FlightInput";
-import { PLANET_RADIUS } from "../world/Planet";
+import { PLANET_RADIUS } from "../world/CubeSpherePlanet";
 
 export interface FlightState {
   position: THREE.Vector3;

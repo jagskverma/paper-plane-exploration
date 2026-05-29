@@ -6,7 +6,7 @@ import { CameraController } from "../flight/CameraController";
 import { PlaneModel } from "../flight/PlaneModel";
 import { InputManager } from "../input/InputManager";
 import { Atmosphere } from "../rendering/Atmosphere";
-import { Planet } from "../world/Planet";
+import { CubeSpherePlanet } from "../world/CubeSpherePlanet";
 import { flightControllerRef } from "./flightRef";
 
 export function FlightScene() {
@@ -48,7 +48,7 @@ export function FlightScene() {
   return (
     <>
       <Atmosphere />
-      <Planet />
+      <CubeSpherePlanet />
       <group ref={planeRef}>
         <PlaneModel />
       </group>
