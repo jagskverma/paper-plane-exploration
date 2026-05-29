@@ -19,7 +19,6 @@ const LEVEL_RATE = 2.0;
 
 export class FlightController {
   private state: FlightState;
-  private frameCount = 0;
 
   constructor() {
     const q = new THREE.Quaternion();
@@ -47,13 +46,12 @@ export class FlightController {
     dt = Math.min(dt, 0.1);
     if (dt <= 0) return;
 
-    // Roll
+    // --- Player controls ---
     const rollDelta = input.bank * ROLL_RATE * dt;
     if (Math.abs(rollDelta) > 0.0001) {
       const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(this.state.rotation);
       this.state.rotation.multiply(new THREE.Quaternion().setFromAxisAngle(fwd, rollDelta));
     }
-    // Pitch
     const pitchDelta = (input.throttle - input.pitch) * PITCH_RATE * dt;
     if (Math.abs(pitchDelta) > 0.0001) {
       const right = new THREE.Vector3(1, 0, 0).applyQuaternion(this.state.rotation);
@@ -61,28 +59,28 @@ export class FlightController {
     }
     this.state.rotation.normalize();
 
-    // Forward movement
-    const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(this.state.rotation);
-    this.state.position.addScaledVector(forward, BASE_SPEED * dt);
-
-    // Planet-relative vectors
+    // --- Planet-relative ---
     const normal = this.state.position.clone().normalize();
     const toCenter = normal.clone().multiplyScalar(-1);
     this.state.altitude = this.state.position.length() - PLANET_RADIUS;
 
-    // Gravity + lift
+    // --- Forward movement (always tangent to surface) ---
+    const rawFwd = new THREE.Vector3(0, 0, -1).applyQuaternion(this.state.rotation);
+    const tangentFwd = rawFwd.clone()
+      .addScaledVector(normal, -rawFwd.dot(normal))
+      .normalize();
+    this.state.position.addScaledVector(tangentFwd, BASE_SPEED * dt);
+
+    // --- Gravity + lift ---
     if (this.state.altitude >= MIN_ALTITUDE) {
       this.state.position.addScaledVector(toCenter, GRAVITY * dt);
-      // Simple lift to balance gravity at level flight
-      const liftForce = GRAVITY; // exactly balances gravity — stable level flight
-      this.state.position.addScaledVector(normal, liftForce * dt);
+      this.state.position.addScaledVector(normal, GRAVITY * dt);  // lift = gravity
     }
-
     if (this.state.altitude < MIN_ALTITUDE) {
       this.state.position.copy(normal.multiplyScalar(PLANET_RADIUS + MIN_ALTITUDE));
     }
 
-    // Gentle auto-level
+    // --- Gentle auto-level (visual only, doesn't affect flight path) ---
     const localUp = new THREE.Vector3(0, 1, 0).applyQuaternion(this.state.rotation);
     const axis = new THREE.Vector3().crossVectors(localUp, normal).normalize();
     const angle = Math.acos(THREE.MathUtils.clamp(localUp.dot(normal), -1, 1));
@@ -90,12 +88,6 @@ export class FlightController {
       const corr = Math.min(angle, LEVEL_RATE * dt);
       this.state.rotation.premultiply(new THREE.Quaternion().setFromAxisAngle(axis, corr));
       this.state.rotation.normalize();
-    }
-
-    // Debug
-    this.frameCount++;
-    if (this.frameCount % 60 === 0) {
-      console.log(`alt=${this.state.altitude.toFixed(0)} upComp=${forward.dot(normal).toFixed(2)}`);
     }
   }
 
