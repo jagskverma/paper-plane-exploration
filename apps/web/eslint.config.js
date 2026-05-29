@@ -23,6 +23,11 @@ export default defineConfig([
       globals: globals.browser,
     },
     settings: {
+      "import/resolver": {
+        node: {
+          extensions: [".js", ".jsx", ".ts", ".tsx"],
+        },
+      },
       "boundaries/include": ["src/**/*"],
       "boundaries/elements": [
         { mode: "full", type: "core", pattern: "src/core/**/*" },
@@ -53,27 +58,27 @@ export default defineConfig([
             // Flight must not depend on terrain, procedural, or world.
             {
               from: { type: "flight" },
-              disallow: ["terrain", "procedural", "world"],
+              disallow: { to: { type: ["terrain", "procedural", "world"] } },
             },
             // Rendering must not depend on flight or terrain logic.
             {
               from: { type: "rendering" },
-              disallow: ["flight", "terrain"],
+              disallow: { to: { type: ["flight", "terrain"] } },
             },
             // Terrain must not depend on flight, ui, or audio.
             {
               from: { type: "terrain" },
-              disallow: ["flight", "ui", "audio"],
+              disallow: { to: { type: ["flight", "ui", "audio"] } },
             },
             // Procedural must not depend on rendering internals.
             {
               from: { type: "procedural" },
-              disallow: ["rendering"],
+              disallow: { to: { type: "rendering" } },
             },
             // Shaders must not depend on rendering, flight, or terrain.
             {
               from: { type: "shaders" },
-              disallow: ["rendering", "flight", "terrain"],
+              disallow: { to: { type: ["rendering", "flight", "terrain"] } },
             },
           ],
         },

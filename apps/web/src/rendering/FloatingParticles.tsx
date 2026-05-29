@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/purity */
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
@@ -14,6 +13,14 @@ interface FloatingParticlesParams {
   size: number;
 }
 
+function createSeededRandom(seed: number) {
+  let state = seed >>> 0;
+  return () => {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    return state / 4294967296;
+  };
+}
+
 /**
  * Floating dust/pollen particles for atmospheric depth.
  * Gently drifting upward, creating parallax depth cues.
@@ -26,16 +33,20 @@ export function FloatingParticles({
 }: FloatingParticlesParams) {
   const pointsRef = useRef<THREE.Points>(null);
 
-  const { positions, velocities } = useMemo(() => {
+  const { positions, resetXZ, velocities } = useMemo(() => {
+    const random = createSeededRandom(count * 1000 + spread * 10);
     const pos = new Float32Array(count * 3);
+    const resets = new Float32Array(count * 2);
     const vel = new Float32Array(count);
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * spread * 2;
-      pos[i * 3 + 1] = Math.random() * spread;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * spread * 2;
-      vel[i] = 0.3 + Math.random() * 0.7; // upward drift speed
+      pos[i * 3] = (random() - 0.5) * spread * 2;
+      pos[i * 3 + 1] = random() * spread;
+      pos[i * 3 + 2] = (random() - 0.5) * spread * 2;
+      resets[i * 2] = (random() - 0.5) * spread * 2;
+      resets[i * 2 + 1] = (random() - 0.5) * spread * 2;
+      vel[i] = 0.3 + random() * 0.7; // upward drift speed
     }
-    return { positions: pos, velocities: vel };
+    return { positions: pos, resetXZ: resets, velocities: vel };
   }, [count, spread]);
 
   const geo = useMemo(() => {
@@ -72,8 +83,8 @@ export function FloatingParticles({
       // Wrap around when reaching top
       if (pos[i * 3 + 1] > spread) {
         pos[i * 3 + 1] = -spread * 0.5;
-        pos[i * 3] = (Math.random() - 0.5) * spread * 2;
-        pos[i * 3 + 2] = (Math.random() - 0.5) * spread * 2;
+        pos[i * 3] = resetXZ[i * 2];
+        pos[i * 3 + 2] = resetXZ[i * 2 + 1];
       }
     }
     pointsRef.current.geometry.attributes.position.needsUpdate = true;

@@ -15,11 +15,13 @@ export class InputManager {
   private keys = new Set<string>();
 
   private onKeyDown = (e: KeyboardEvent) => {
+    if (e.code.startsWith("Arrow")) e.preventDefault();
     this.keys.add(e.code);
     this.updateState();
   };
 
   private onKeyUp = (e: KeyboardEvent) => {
+    if (e.code.startsWith("Arrow")) e.preventDefault();
     this.keys.delete(e.code);
     this.updateState();
   };

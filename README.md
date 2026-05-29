@@ -20,7 +20,9 @@ Not a flight sim. Not a combat game. Not a survival sandbox.
 ## Quick Start
 
 ```bash
-# Coming in Phase 1
+cd apps/web
+pnpm install
+pnpm dev
 ```
 
 ## Documentation
@@ -35,6 +37,6 @@ Not a flight sim. Not a combat game. Not a survival sandbox.
 
 ## Status
 
-**Phase 0 — Documentation & Planning**
+**Phase 5.5 — Paper Plane Scale & Ground-Proximity Feel**
 
 See [PROJECT_STATE.md](docs/PROJECT_STATE.md) for current state.

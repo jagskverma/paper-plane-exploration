@@ -34,3 +34,4 @@ What becomes easier or harder because of this decision?
 | ADR | Title | Status |
 |-----|-------|--------|
 | [001](001-cube-sphere-topology.md) | Cube-sphere planet topology | accepted |
+| [002](002-terrain-streaming-architecture.md) | Terrain streaming architecture | proposed |

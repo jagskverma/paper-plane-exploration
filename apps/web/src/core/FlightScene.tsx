@@ -7,10 +7,15 @@ import { PlaneModel } from "../flight/PlaneModel";
 import { InputManager } from "../input/InputManager";
 import { Atmosphere } from "../rendering/Atmosphere";
 import { CubeSpherePlanet } from "../world/CubeSpherePlanet";
+import { ScaleTestObjects } from "../world/ScaleTestObjects";
+import { getScaleTestCollisionObstacles } from "../world/ScaleTestPlacements";
 import { flightControllerRef } from "./flightRef";
+import { evaluateTerrainHeight } from "../procedural/TerrainHeight";
 
 export function FlightScene() {
-  const flightRef = useRef<FlightController>(new FlightController());
+  const flightRef = useRef<FlightController>(
+    new FlightController(evaluateTerrainHeight),
+  );
   const cameraRef = useRef<CameraController>(new CameraController());
   const inputRef = useRef<InputManager>(new InputManager());
   const planeRef = useRef<THREE.Group>(null);
@@ -20,6 +25,7 @@ export function FlightScene() {
     const canvas = gl.domElement;
     const input = inputRef.current;
     input.start(canvas);
+    flightRef.current.setCollisionObstacles(getScaleTestCollisionObstacles());
     flightControllerRef.current = flightRef.current;
     cameraRef.current.snap(flightRef.current.getState());
     return () => {
@@ -49,6 +55,7 @@ export function FlightScene() {
     <>
       <Atmosphere />
       <CubeSpherePlanet />
+      <ScaleTestObjects />
       <group ref={planeRef}>
         <PlaneModel />
       </group>

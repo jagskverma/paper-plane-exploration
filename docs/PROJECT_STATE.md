@@ -4,7 +4,7 @@
 
 ## Current Phase
 
-**Phase 6 — Terrain Architecture Research** ← current
+**Phase 5.5 — Paper Plane Scale & Ground-Proximity Feel** ← current
 
 ## Repo
 
@@ -24,19 +24,20 @@
 
 - [x] Vite + TypeScript + pnpm scaffold
 - [x] Three.js + R3F + Drei integrated
+- [x] TypeScript strict mode enabled
 - [x] ESLint with `eslint-plugin-boundaries`
-- [x] 11 subsystem folders
+- [x] 12 subsystem folders
 
 ## Phase 2 — Flight Feel Prototype ✅
 
 - [x] Arrow-key flight: roll, pitch, auto-forward
-- [x] jet.glb model at 0.3 scale
-- [x] Camera 5m behind, world-up aligned
+- [x] Procedural low-poly paper plane model for stable alignment and chase camera readability
+- [x] Camera 5m behind, surface-up aligned
 
 ## Phase 3 — Atmospheric Rendering ✅
 
 - [x] Blue sky dome (R=6000) with vertex-color gradient
-- [x] Animated sun with warm/cool color shifts
+- [x] Animated sun with warm/cool sky, light, and fog shifts
 - [x] Volumetric cloud spheres at 3 altitudes
 - [x] Floating dust particles (additive blending)
 - [x] Exponential fog (0.00025 density)
@@ -46,27 +47,51 @@
 
 - [x] Green sphere planet (R=4000)
 - [x] Surface-relative flight: gravity toward center
-- [x] Tangent-plane movement (no altitude change from roll)
-- [x] Auto-level to surface normal
-- [x] Lift = gravity (stable altitude at 60m)
-- [x] Debug HUD (altitude/speed/position)
+- [x] Roll turns in the local tangent frame
+- [x] Plane orientation aligns to surface normal while preserving bank and pitch
+- [x] Lift = gravity at neutral pitch (stable cruise altitude)
+- [x] Debug HUD (altitude/speed/bank/pitch/position)
 
 ## Phase 5 — Planet Topology & Coordinate Systems ✅
 
 - [x] Cube-sphere planet (6 faces, 48×48 resolution, R=4000)
-- [x] GLSL simplex 3D noise + FBM (6 octaves) in vertex shader
+- [x] CPU-side deterministic terrain height shared by rendering and flight
 - [x] Height-based color bands (deep blue → green → gray → white)
 - [x] Diffuse lighting on terrain
-- [x] Terrain amplitude: 150m (below 200m flight ceiling)
-- [x] Flight altitude: 200m, min altitude: 50m
+- [x] Terrain amplitude: 70m (below 110m cruise altitude)
+- [x] Flight altitude: 110m, min altitude: 35m
+- [x] Flight altitude is measured above procedural terrain height
 - [x] No clipping — plane safely above terrain peaks
 - [x] Debug HUD shows altitude, distance, rotation, position
 - [x] Researched `dgreenheck/threejs-procedural-planets` for patterns
 
-## Phase 6 — Terrain Architecture Research (next)
+## Phase 5.5 — Paper Plane Scale & Ground-Proximity Feel ← current
 
-- Research scalable procedural terrain, chunk streaming, LOD
-- Plan cube-sphere terrain architecture
-- Memory management strategy
+Purpose: correct the feel target before scaling terrain architecture. The game should feel like a real paper plane gliding close to terrain and environmental objects, not a small aircraft cruising high above a planet.
+
+- [x] Lowered cruise altitude from 200m to 110m as an interim fix
+- [x] Lowered terrain amplitude from 150m to 70m as an interim fix
+- [x] Added CPU-side terrain height sampling for flight safety
+- [x] Retuned world scale toward low-altitude paper-plane flight
+- [x] Current cruise altitude: 12m AGL
+- [x] Current terrain amplitude: 10m
+- [x] Removed passive glide sink while scale testing so neutral flight does not automatically lose altitude
+- [x] Added minimum AGL clamp and clear AGL debugging
+- [x] Retuned camera for close, low, slow paper-plane traversal
+- [x] Added a curated placeholder object strip for fly-through scale testing
+- [x] Replaced problematic paper-plane GLB with procedural geometry
+- [x] Mesh-anchored scale-test assets to the rendered cube-sphere terrain surface
+- [x] Added coarse placeholder collision volumes for scale-test trees, bushes, and rocks
+- [ ] Playtest flying between terrain objects before terrain streaming
+
+Available local asset library is documented in `docs/references/ASSET_LIBRARY.md`.
+
+## Phase 6 — Terrain Architecture Research
+
+- [x] Drafted terrain architecture research notes
+- [x] Proposed per-face quadtree chunk architecture
+- [x] Defined Phase 7 implementation sequence
+- [ ] Human review of ADR-002
+- [ ] Phase 7 task selection
 
 ## Phase 7+ (future)

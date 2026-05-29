@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/refs */
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { SkyDome } from "./SkyDome";
 import { SunLight } from "./SunLight";
@@ -9,12 +9,17 @@ import { FloatingParticles } from "./FloatingParticles";
 
 export function Atmosphere() {
   const sunAngleRef = useRef(Math.PI / 2.5);
+  const publishTimerRef = useRef(0);
+  const [sunAngle, setSunAngle] = useState(sunAngleRef.current);
 
   useFrame((_, delta) => {
     sunAngleRef.current += delta * 0.005;
+    publishTimerRef.current += delta;
+    if (publishTimerRef.current >= 0.25) {
+      publishTimerRef.current = 0;
+      setSunAngle(sunAngleRef.current);
+    }
   });
-
-  const sunAngle = sunAngleRef.current;
 
   return (
     <>

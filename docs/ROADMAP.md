@@ -21,6 +21,8 @@ Traversal
     ↓
 Scale Illusion
     ↓
+Paper Plane Scale
+    ↓
 Terrain
     ↓
 Biome Variety
@@ -47,12 +49,13 @@ The project prioritizes emotional experience first. If a feature does not improv
 | # | Phase | Status | Difficulty |
 |---|-------|--------|------------|
 | 0 | Project Governance | ✅ done | Low |
-| 1 | Engine Foundation | pending | Low |
-| 2 | Flight Feel Prototype | pending | ⚠️ Surprisingly Hard |
-| 3 | Atmospheric Rendering | pending | 🎨 Artistically Hard |
-| 4 | Spherical Traversal Prototype | pending | Medium |
-| 5 | Planet Topology & Coordinate Systems | pending | Medium |
-| 6 | Terrain Architecture Research | pending | Medium |
+| 1 | Engine Foundation | ✅ done | Low |
+| 2 | Flight Feel Prototype | ✅ done | ⚠️ Surprisingly Hard |
+| 3 | Atmospheric Rendering | ✅ done | 🎨 Artistically Hard |
+| 4 | Spherical Traversal Prototype | ✅ done | Medium |
+| 5 | Planet Topology & Coordinate Systems | ✅ done | Medium |
+| 5.5 | Paper Plane Scale & Ground-Proximity Feel | in progress | ⚠️ Feel-Critical |
+| 6 | Terrain Architecture Research | drafted | Medium |
 | 7 | Terrain Streaming MVP | pending | 🔴 Extremely Hard |
 | 8 | Terrain Stability & Optimization | pending | 🔴 Extremely Hard |
 | 9 | Biome Generation System | pending | Medium |
@@ -85,6 +88,13 @@ Paper plane flies through atmospheric void. Movement feels good. Atmosphere is e
 
 Paper plane traverses a cube-sphere planet. Seamless. Proper gravity alignment. Curved-horizon movement. Scale illusion holds up.
 
+### Milestone 2.5: Real Paper Plane Scale
+**Phase 5.5**
+
+The player flies low enough that the environment matters. Terrain, trees, rocks, and small props should pass near the plane at paper-plane scale. The flight feel should be gliding, light, vulnerable, and close to the ground, not aircraft-like cruising above landscape.
+
+**Gate:** Do not proceed into full terrain streaming until low-altitude flight feels credible with placeholder terrain objects. If flying low is not satisfying, streaming more terrain will scale the wrong experience.
+
 ### Milestone 3: Living World
 **Phases 6–12**
 
@@ -108,6 +118,7 @@ Content expansion and architectural cleanup after real-world scaling.
 |-------|------|-----|
 | 2 — Flight Feel | ⚠️ High | Feel is subjective. Requires many iteration loops. Easy to over-engineer or under-deliver. |
 | 3 — Atmosphere | 🎨 High | Artistic, not technical. Hard to tune. Easy to make "generic sky." |
+| 5.5 — Paper Plane Scale | ⚠️ High | This determines whether the game feels like a paper plane or a small aircraft. Requires tight iteration on altitude, speed, camera, and nearby object scale. |
 | 7 — Terrain Streaming MVP | 🔴 Critical | Cube-sphere chunk streaming with LOD in a browser. Most likely phase to fail. |
 | 8 — Terrain Stability | 🔴 Critical | Seams, cracks, popping, memory pressure, GC spikes. Death by a thousand edge cases. Most procedural projects fail here. |
 | 16 — Performance | 🔴 Critical | Browser profiling is unforgiving. Easy to optimize the wrong thing. Must be data-driven. |
@@ -118,6 +129,7 @@ Content expansion and architectural cleanup after real-world scaling.
 |-------|-------------|-------|
 | Fun flight prototype (Phases 1–3) | 1–3 weeks | Iteration-heavy. Feel tuning takes time. |
 | Stable spherical traversal (Phases 4–5) | 2–6 weeks | Coordinate systems are finicky. |
+| Paper-plane scale correction (Phase 5.5) | 1–2 weeks | Must be playtested. Small numerical changes have large feel impact. |
 | Good terrain architecture (Phases 6–8) | 1–3 months | This is The Monster. Most common death zone. |
 | Convincing atmosphere | Ongoing | Continuously refined across all phases. |
 | "Feels like a real game" (Phases 13+) | Several months | Depends heavily on foundation quality. |
@@ -210,6 +222,51 @@ This phase reduces future architectural instability, scaling problems, and preci
 
 ---
 
+### Phase 5.5 — Paper Plane Scale & Ground-Proximity Feel ⚠️
+
+**Goal:** Correct moment-to-moment scale so the game feels like a real paper plane gliding through a low-poly world.
+
+**Why this phase exists:** The current architecture can traverse a spherical world, but the feel target has drifted toward “small aircraft over terrain.” A real paper plane experience depends on low altitude, nearby objects, gentle vulnerability, and close terrain reading. This phase validates that core experience before expensive terrain streaming work.
+
+**Focus:**
+- Low-altitude flight measured in meters above ground level, not high planetary cruising.
+- Cruise target around 8-15m AGL, with room to tune after playtesting.
+- Terrain amplitude and frequency scaled to make low flight safe but visually interesting.
+- Paper-plane glide behavior: light, unpowered, slightly lossy, responsive but not aircraft-precise.
+- Close chase camera tuned for nearby object parallax and readable paper-plane orientation.
+- AGL debug readout and ground-proximity safety behavior.
+- A tiny curated placeholder object set: trees, rocks, shrubs, and maybe one simple structure only for scale validation.
+
+**Success Criteria:**
+- The player can fly close to the ground without constant clipping.
+- Terrain feels near enough to matter at neutral cruise.
+- Pitching down creates a visible approach toward terrain.
+- Pitching up gives a brief climb but should not feel like powered aircraft ascent.
+- Banking creates readable arcing turns at low altitude.
+- Nearby trees or rocks pass close enough to create paper-plane scale.
+- Placeholder assets demonstrate “flying between objects” without becoming a content phase.
+
+**Avoid:**
+- Full procedural object placement systems.
+- Biome variety.
+- Terrain streaming.
+- Large asset ingestion.
+- Complex collision volumes for every asset.
+- Turning this into a general environment engine.
+
+**Asset Usage:**
+Use the local asset library documented in `docs/references/ASSET_LIBRARY.md`. Select only a few low-poly `.glb` assets for scale testing. Poly Pizza Nature is the preferred first source for trees, rocks, and grass because it is already `.glb` and likely browser-friendly.
+
+**Expected Deliverables:**
+- Tuned `worldConfig` values for low-altitude paper-plane scale.
+- Flight model changes for glide/sink/climb behavior.
+- Camera tuning for low-altitude traversal.
+- Terrain-aware AGL debug display.
+- Minimal scale-test object component using 2-5 curated assets.
+- Short playtest notes describing whether flying between objects feels credible.
+
+---
+
 ### Phase 6 — Terrain Architecture Research
 
 **Goal:** Research scalable procedural terrain architecture before implementation.
@@ -218,7 +275,7 @@ This phase reduces future architectural instability, scaling problems, and preci
 
 **Success Criteria:** Clear terrain architecture strategy, identified technical risks, incremental implementation plan.
 
-**Avoid:** Rushing directly into implementation without a plan.
+**Avoid:** Rushing directly into implementation without a plan. Do not proceed if Phase 5.5 has not validated low-altitude paper-plane scale.
 
 This phase is research-first. Do NOT skip it.
 

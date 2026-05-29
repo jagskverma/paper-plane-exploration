@@ -8,9 +8,9 @@ Atmospheric lowpoly paper plane exploration game. Browser-first. Three.js + Reac
 
 The goal is emotional — a feeling of drifting through a vast beautiful world. NOT a tech demo, NOT a sim, NOT a systems-heavy game.
 
-## Current Phase: 1 — Engine Foundation
+## Current Phase: 5.5 — Paper Plane Scale & Ground-Proximity Feel
 
-Only build what Phase 1 requires: Vite + TS + Three.js + R3F scaffold. No gameplay. No terrain. No speculative architecture.
+Phases 1-5 are implemented. Current work is a corrective feel/scale phase before terrain streaming: make the moment-to-moment experience feel like a real paper plane flying low through a low-poly world. Do not implement Phase 7 terrain streaming until Phase 5.5 is playtested and Phase 6 research/ADR review is accepted.
 
 ## Non-Negotiable Rules
 
@@ -90,5 +90,6 @@ Do NOT optimize early. Prioritize clarity and feel. Optimization comes in Phase 
 | `docs/ROADMAP.md` | What phase are we in, what's next |
 | `docs/TASK_TEMPLATE.md` | Before ANY implementation task |
 | `docs/PROJECT_STATE.md` | Current status |
+| `docs/references/ASSET_LIBRARY.md` | Available local assets |
 | `docs/decisions/` | Why we chose X over Y |
 | `docs/REVIEW_CHECKLIST.md` | Pre-merge review gates |

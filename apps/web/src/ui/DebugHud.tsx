@@ -31,7 +31,10 @@ export function DebugHud({ getState }: DebugHudProps) {
       euler.z = Math.atan2(siny_cosp, cosy_cosp);
 
       ref.current.textContent =
-        `alt: ${s.altitude.toFixed(1)}m | ` +
+        `AGL: ${s.altitude.toFixed(1)}m | ` +
+        `speed: ${s.speed.toFixed(1)}m/s | ` +
+        `bank: ${(s.bankAngle * 180 / Math.PI).toFixed(0)}deg | ` +
+        `pitch: ${(s.pitchAngle * 180 / Math.PI).toFixed(0)}deg | ` +
         `dist: ${dist.toFixed(0)} | ` +
         `rot: (${euler.x.toFixed(2)},${euler.y.toFixed(2)},${euler.z.toFixed(2)}) | ` +
         `pos: (${s.position.x.toFixed(0)},${s.position.y.toFixed(0)},${s.position.z.toFixed(0)})`;

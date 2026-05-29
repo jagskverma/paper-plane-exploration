@@ -1,13 +1,13 @@
 import * as THREE from "three";
 import type { FlightState } from "./FlightController";
 
-const FOLLOW_DIST = 5;
-const HEIGHT_OFFSET = 1.5;
-const LOOK_AHEAD = 5;
-const SMOOTHING = 5.0;
+const FOLLOW_DIST = 2.8;
+const HEIGHT_OFFSET = 0.8;
+const LOOK_AHEAD = 3.5;
+const SMOOTHING = 4.0;
 
 /**
- * Simple follow camera — always behind the plane, world-up aligned.
+ * Simple follow camera — always behind the plane, surface-up aligned.
  * No banking influence, just smooth tracking.
  */
 export class CameraController {
@@ -17,11 +17,12 @@ export class CameraController {
   update(flight: FlightState, dt: number) {
     dt = Math.min(dt, 0.1);
     const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(flight.rotation);
+    const surfaceUp = flight.position.clone().normalize();
 
     // Camera behind the plane
     const targetPos = flight.position.clone()
       .addScaledVector(fwd, -FOLLOW_DIST)
-      .add(new THREE.Vector3(0, HEIGHT_OFFSET, 0));
+      .addScaledVector(surfaceUp, HEIGHT_OFFSET);
 
     // Look at a point ahead of the plane
     const targetLook = flight.position.clone()
@@ -36,7 +37,11 @@ export class CameraController {
 
   snap(flight: FlightState) {
     const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(flight.rotation);
-    this.pos.copy(flight.position).addScaledVector(fwd, -FOLLOW_DIST).add(new THREE.Vector3(0, HEIGHT_OFFSET, 0));
+    const surfaceUp = flight.position.clone().normalize();
+    this.pos
+      .copy(flight.position)
+      .addScaledVector(fwd, -FOLLOW_DIST)
+      .addScaledVector(surfaceUp, HEIGHT_OFFSET);
     this.look.copy(flight.position).addScaledVector(fwd, LOOK_AHEAD);
   }
 }
