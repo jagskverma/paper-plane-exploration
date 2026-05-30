@@ -43,3 +43,4 @@ assets/
 # Prototype / research artifacts (keep in research/, not tracked)
 research/output/
 research/build/
+assets-original-backup/
