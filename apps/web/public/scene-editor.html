@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scene Editor — Paper Plane Exploration</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #eee; display: flex; height: 100vh; overflow: hidden; }
+#sidebar { width: 340px; min-width: 280px; background: #16213e; display: flex; flex-direction: column; border-right: 1px solid #0f3460; }
+#search { padding: 8px; }
+#search input { width: 100%; padding: 7px 10px; border-radius: 6px; border: 1px solid #0f3460; background: #0a1628; color: #eee; font-size: 13px; }
+#filters { padding: 0 8px 6px; display: flex; flex-wrap: wrap; gap: 3px; }
+#filters button { padding: 2px 8px; border-radius: 10px; border: 1px solid #0f3460; background: #0a1628; color: #aaa; cursor: pointer; font-size: 10px; }
+#filters button.active { background: #0f3460; color: #fff; }
+#stats { padding: 0 8px 4px; font-size: 10px; color: #666; }
+#list { flex: 1; overflow-y: auto; padding: 0 6px; }
+.item { padding: 5px 7px; margin: 1px 0; border-radius: 3px; cursor: pointer; font-size: 11px; border-left: 2px solid transparent; display: flex; justify-content: space-between; align-items: center; }
+.item:hover { background: #1a2744; }
+.item.selected { background: #0f3460; border-left-color: #4af; }
+.item .name { font-weight: 600; color: #ccc; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.item .meta { font-size: 9px; color: #777; }
+#main { flex: 1; display: flex; flex-direction: column; position: relative; }
+#toolbar { display: flex; gap: 4px; padding: 6px 10px; background: #16213e; border-bottom: 1px solid #0f3460; align-items: center; }
+#toolbar button { padding: 4px 10px; border-radius: 4px; border: 1px solid #0f3460; background: #0a1628; color: #aaa; cursor: pointer; font-size: 11px; }
+#toolbar button.active { background: #0f3460; color: #fff; border-color: #4af; }
+#toolbar button.primary { background: #1a3a5a; color: #8cf; border-color: #2a5a8a; }
+#toolbar button.danger { background: #3a1a1a; color: #c88; border-color: #5a2a2a; }
+#toolbar .spacer { flex: 1; }
+#toolbar label { font-size: 10px; color: #666; margin-left: 8px; }
+#toolbar input[type=number] { width: 58px; padding: 2px 4px; border-radius: 3px; border: 1px solid #0f3460; background: #0a1628; color: #eee; font-size: 10px; }
+#viewer { flex: 1; position: relative; cursor: crosshair; }
+#info { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.8); padding: 6px 10px; border-radius: 4px; font-size: 10px; }
+#info .label { color: #888; }
+#info .val { color: #8cf; }
+#scenePanel { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 4px; font-size: 10px; min-width: 160px; max-height: 200px; overflow-y: auto; }
+#scenePanel h4 { margin: 0 0 4px; font-size: 11px; color: #8cf; }
+#scenePanel .placed { padding: 2px 4px; cursor: pointer; border-radius: 2px; color: #aaa; }
+#scenePanel .placed:hover { background: #1a2744; }
+#scenePanel .placed.active { color: #4af; background: #0f3460; }
+#help { position: absolute; top: 8px; left: 8px; font-size: 10px; color: #666; pointer-events: none; }
+#previewContainer { margin: 0 8px 4px; border-radius: 6px; overflow: hidden; border: 1px solid #0f3460; background: #0a1628; min-height: 140px; position: relative; }
+#previewContainer canvas { display: block; width: 100%; height: 140px; }
+#previewLabel { position: absolute; bottom: 2px; left: 4px; font-size: 9px; color: #555; pointer-events: none; }
+#noPreview { display: flex; align-items: center; justify-content: center; height: 140px; color: #444; font-size: 11px; }
+</style>
+</head>
+<body>
+<div id="sidebar">
+  <div id="search"><input type="text" placeholder="Search assets... (click to select, then click ground to place)" id="searchInput"></div>
+  <div id="filters">
+    <button data-cat="all" class="active">All</button>
+    <button data-cat="tree">Trees</button>
+    <button data-cat="bush">Bushes</button>
+    <button data-cat="rock">Rocks</button>
+    <button data-cat="structure">Structures</button>
+    <button data-cat="landmark">Landmarks</button>
+    <button data-cat="prop">Props</button>
+    <button data-cat="vehicle">Vehicles</button>
+    <button data-cat="scene">Scenes</button>
+    <button data-cat="compressed" style="background:#1a2a1a;border-color:#2a5a2a">Compressed</button>
+  </div>
+  <div id="previewContainer">
+    <div id="noPreview">Select an asset to preview</div>
+    <div id="previewLabel"></div>
+  </div>
+  <div id="stats"></div>
+  <div id="list"></div>
+</div>
+<div id="main">
+  <div id="toolbar">
+    <button id="btnSelect" class="active" title="Select (Q)">▶ Select</button>
+    <button id="btnMove" title="Move (W)">⤡ Move</button>
+    <button id="btnRotate" title="Rotate (E)">↻ Rotate</button>
+    <button id="btnScale" title="Scale (R) — use mouse wheel or +/- buttons">⇲ Scale</button>
+    <button id="btnScaleDown" title="Scale down 20%">−</button>
+    <input type="range" id="scaleSlider" min="0.1" max="10" step="0.05" value="1" style="width:60px;vertical-align:middle" title="Scale multiplier">
+    <span id="scaleVal" style="font-size:10px;color:#8cf;min-width:32px">1.0x</span>
+    <button id="btnScaleUp" title="Scale up 25%">+</button>
+    <span class="spacer"></span>
+    <label>Snap:</label>
+    <input type="number" id="snapVal" value="1" min="0.1" step="0.1" title="Grid snap">
+    <button id="btnSnap" title="Toggle snap">Snap: ON</button>
+    <button id="btnUndo" title="Undo (Ctrl+Z)">↩ Undo</button>
+    <button id="btnRedo" title="Redo">↪ Redo</button>
+    <span class="spacer"></span>
+    <button id="btnClear" class="danger">✕ Clear</button>
+    <button id="btnSave" class="primary">💾 Save Scene</button>
+    <button id="btnLoad" class="primary">📂 Load</button>
+  </div>
+  <div id="viewer">
+    <div id="help">Click ground to place · Right-drag to orbit · Scroll to zoom · Middle-drag to pan</div>
+    <div id="info">
+      <div>Selected: <span class="val" id="infoName">none</span></div>
+      <div>Position: <span class="val" id="infoPos">—</span></div>
+      <div>Scale: <span class="val" id="infoScale">—</span></div>
+      <div>Placed: <span class="val" id="infoCount">0</span></div>
+    </div>
+    <div id="scenePanel">
+      <h4>📋 Placed Objects</h4>
+      <div id="sceneList">—</div>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+// ── Database ──
+const resp = await fetch('/glb-database.json');
+const db = await resp.json();
+
+// ── State ──
+let currentAsset = null;
+let placedObjects = [];       // { id, assetEntry, model, position, rotation, scale, baseMinY, collisionHeight, collisionRadius }
+let selectedObject = null;
+let toolMode = 'select';     // select | translate | rotate | scale
+let snapEnabled = true;
+let snapValue = 1.0;
+let undoStack = [];
+let redoStack = [];
+let sceneName = 'Untitled Scene';
+
+// ── Three.js ──
+const viewer = document.getElementById('viewer');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#1a1a2e');
+scene.fog = new THREE.Fog('#1a1a2e', 80, 200);
+
+const camera = new THREE.PerspectiveCamera(50, 1, 0.5, 500);
+camera.position.set(30, 25, 40);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+viewer.appendChild(renderer.domElement);
+
+// Orbit controls
+const orbitControls = new OrbitControls(camera, renderer.domElement);
+orbitControls.enableDamping = true;
+orbitControls.dampingFactor = 0.08;
+orbitControls.target.set(0, 0, 0);
+orbitControls.maxPolarAngle = Math.PI / 2 + 0.2;
+orbitControls.minDistance = 5;
+orbitControls.maxDistance = 150;
+orbitControls.mouseButtons = { LEFT: null, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.ROTATE };
+
+// Transform controls (move + rotate only, scale handled separately)
+const transformControls = new TransformControls(camera, renderer.domElement);
+transformControls.addEventListener('dragging-changed', (e) => {
+  orbitControls.enabled = !e.value;
+});
+transformControls.addEventListener('objectChange', () => {
+  if (!selectedObject) return;
+  const obj = selectedObject;
+  const tc = transformControls;
+  if (toolMode !== 'scale') {
+    obj.position.copy(tc.object.position);
+    obj.rotation.copy(tc.object.rotation);
+    obj.scale.copy(tc.object.scale);
+  }
+  updateInfoPanel();
+});
+
+// ── Uniform Scale (mouse wheel + UI) ──
+function applyUniformScale(obj, newScale) {
+  newScale = Math.max(0.1, Math.min(10, newScale));
+  obj.scale.setScalar(newScale);
+  obj.model.scale.setScalar(newScale);
+  obj.position.y = -obj.baseMinY * newScale;
+  obj.model.position.y = obj.position.y;
+  if (selectedObject === obj) {
+    transformControls.object.scale.setScalar(newScale);
+    transformControls.object.position.y = obj.position.y;
+  }
+  document.getElementById('scaleSlider').value = newScale;
+  document.getElementById('scaleVal').textContent = newScale.toFixed(1) + 'x';
+  updateInfoPanel();
+}
+
+viewer.addEventListener('wheel', (e) => {
+  if (!selectedObject || toolMode !== 'scale') return;
+  e.preventDefault();
+  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+  applyUniformScale(selectedObject, selectedObject.scale.x * delta);
+}, { passive: false });
+
+function scaleSelected(factor) {
+  if (!selectedObject) return;
+  if (toolMode !== 'scale') setToolMode('scale');
+  applyUniformScale(selectedObject, selectedObject.scale.x * factor);
+}
+
+document.getElementById('btnScaleUp').addEventListener('click', () => scaleSelected(1.25));
+document.getElementById('btnScaleDown').addEventListener('click', () => scaleSelected(0.8));
+document.getElementById('scaleSlider').addEventListener('input', (e) => {
+  if (!selectedObject) return;
+  if (toolMode !== 'scale') setToolMode('scale');
+  applyUniformScale(selectedObject, parseFloat(e.target.value));
+});
+scene.add(transformControls);
+
+// ── Preview Viewport (sidebar) ──
+const previewContainer = document.getElementById('previewContainer');
+const previewScene = new THREE.Scene();
+previewScene.background = new THREE.Color('#0a1628');
+const previewCamera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+previewCamera.position.set(1.5, 1.2, 2.5);
+previewCamera.lookAt(0, 0.3, 0);
+const previewRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+previewRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+previewContainer.appendChild(previewRenderer.domElement);
+previewScene.add(new THREE.AmbientLight('#ffffff', 1.2));
+const pKey = new THREE.DirectionalLight('#ffffff', 2);
+pKey.position.set(2, 3, 2);
+previewScene.add(pKey);
+const pFill = new THREE.DirectionalLight('#8899cc', 0.6);
+pFill.position.set(-1, 1, -1);
+previewScene.add(pFill);
+const previewGroup = new THREE.Group();
+previewScene.add(previewGroup);
+let previewModel = null;
+
+function showPreview(entry) {
+  // Clear previous
+  while (previewGroup.children.length) previewGroup.remove(previewGroup.children[0]);
+  previewModel = null;
+  
+  const noPreview = document.getElementById('noPreview');
+  const label = document.getElementById('previewLabel');
+  noPreview.style.display = 'none';
+  label.textContent = entry.filename.replace('.glb','');
+  
+  const url = resolveUrl(entry);
+  gltfLoader.load(url, (gltf) => {
+    const model = gltf.scene;
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const s = 1.8 / (maxDim || 1);
+    model.scale.setScalar(s);
+    // Center and place base at origin
+    model.position.set(-box.getCenter(new THREE.Vector3()).x * s,
+                       -box.min.y * s,
+                       -box.getCenter(new THREE.Vector3()).z * s);
+    model.traverse(c => { if (c.isMesh) { c.castShadow = false; c.receiveShadow = false; } });
+    previewGroup.add(model);
+    previewModel = model;
+  }, undefined, () => {
+    noPreview.style.display = 'flex';
+    label.textContent = 'Load failed';
+  });
+}
+
+// ── Ground ──
+const groundSize = 100;
+const groundGeo = new THREE.PlaneGeometry(groundSize, groundSize);
+const groundMat = new THREE.MeshStandardMaterial({ color: '#3a4a3a', roughness: 0.9, metalness: 0 });
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+ground.name = 'ground';
+scene.add(ground);
+
+// Grid
+const gridHelper = new THREE.PolarGridHelper(groundSize/2, 50, 20, 64, '#4a5a4a', '#4a5a4a');
+scene.add(gridHelper);
+
+// Ground boundary ring
+const ringGeo = new THREE.TorusGeometry(groundSize/2, 0.3, 16, 80);
+const ring = new THREE.Mesh(ringGeo, new THREE.MeshStandardMaterial({ color: '#5a6a5a', roughness: 0.3 }));
+ring.rotation.x = -Math.PI / 2;
+ring.position.y = 0.05;
+scene.add(ring);
+
+// ── Lighting ──
+scene.add(new THREE.AmbientLight('#ffffff', 0.8));
+const sun = new THREE.DirectionalLight('#ffeedd', 4);
+sun.position.set(60, 80, 40);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 300;
+sun.shadow.camera.left = -60; sun.shadow.camera.right = 60;
+sun.shadow.camera.top = 60; sun.shadow.camera.bottom = -60;
+scene.add(sun);
+const fill = new THREE.DirectionalLight('#8899cc', 0.8);
+fill.position.set(-30, 20, -20);
+scene.add(fill);
+
+// ── Loaders ──
+const gltfLoader = new GLTFLoader();
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('/draco/');
+gltfLoader.setDRACOLoader(dracoLoader);
+
+// ── Raycaster for ground click ──
+const raycaster = new THREE.Raycaster();
+const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+
+// ── Load & place asset ──
+function resolveUrl(entry) {
+  const path = entry.path;
+  if (path.startsWith('assets/')) return '/assets-proxy/' + path.substring(7);
+  if (path.startsWith('apps/web/public/')) return '/' + path.substring('apps/web/public/'.length);
+  return '/assets-proxy/' + path;
+}
+
+function placeAsset(entry, worldPos) {
+  const url = resolveUrl(entry);
+  document.getElementById('loading') && (document.getElementById('loading').style.display = 'block');
+  
+  gltfLoader.load(url, (gltf) => {
+    const model = gltf.scene;
+    
+    // Center model on its base
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+    
+    // Place at click position with base on ground
+    model.position.copy(worldPos);
+    model.position.y -= box.min.y; // base on ground
+    
+    // Store original (1:1) scale — user scales with transform controls
+    model.castShadow = true;
+    model.receiveShadow = true;
+    model.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+    
+    scene.add(model);
+    transformControls.attach(model);
+    
+    const obj = {
+      id: 'obj_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+      assetEntry: entry,
+      model: model,
+      position: model.position.clone(),
+      rotation: model.rotation.clone(),
+      scale: model.scale.clone(),
+      baseMinY: box.min.y,  // original bottom of bounding box, for ground anchoring
+      collisionHeight: entry.height || size.y,
+      collisionRadius: entry.radius || Math.max(size.x, size.z) / 2,
+    };
+    
+    pushUndo();
+    placedObjects.push(obj);
+    selectObject(obj);
+    updateScenePanel();
+    updateInfoPanel();
+    document.getElementById('loading') && (document.getElementById('loading').style.display = 'none');
+  }, undefined, () => {
+    alert('Failed to load: ' + entry.filename);
+    document.getElementById('loading') && (document.getElementById('loading').style.display = 'none');
+  });
+}
+
+// ── Selection ──
+function selectObject(obj) {
+  if (selectedObject === obj) return;
+  selectedObject = obj;
+  if (obj) {
+    transformControls.attach(obj.model);
+    setToolMode(toolMode);
+  } else {
+    transformControls.detach();
+  }
+  updateInfoPanel();
+  updateScenePanel();
+  updateAssetListHighlight();
+}
+
+function deselectAll() {
+  selectedObject = null;
+  transformControls.detach();
+  updateInfoPanel();
+  updateScenePanel();
+}
+
+// ── Tool mode ──
+function setToolMode(mode) {
+  toolMode = mode;
+  document.querySelectorAll('#toolbar button[id^=btn]').forEach(b => b.classList.remove('active'));
+  
+  switch (mode) {
+    case 'select':
+      document.getElementById('btnSelect').classList.add('active');
+      transformControls.mode = 'translate';
+      transformControls.enabled = !!selectedObject;
+      break;
+    case 'translate':
+      document.getElementById('btnMove').classList.add('active');
+      transformControls.mode = 'translate';
+      transformControls.enabled = true;
+      break;
+    case 'rotate':
+      document.getElementById('btnRotate').classList.add('active');
+      transformControls.mode = 'rotate';
+      transformControls.enabled = true;
+      break;
+    case 'scale':
+      document.getElementById('btnScale').classList.add('active');
+      transformControls.enabled = false;
+      // Update slider to selected object's current scale
+      if (selectedObject) {
+        const s = selectedObject.scale.x;
+        document.getElementById('scaleSlider').value = s;
+        document.getElementById('scaleVal').textContent = s.toFixed(1) + 'x';
+      }
+      break;
+  }
+  
+  transformControls.setTranslationSnap(snapEnabled && mode === 'translate' ? snapValue : null);
+  transformControls.setRotationSnap(snapEnabled && mode === 'rotate' ? THREE.MathUtils.degToRad(15) : null);
+  transformControls.setScaleSnap(snapEnabled && mode === 'scale' ? 0.25 : null);
+}
+
+// ── Undo/Redo ──
+function pushUndo() {
+  undoStack.push(JSON.stringify(placedObjects.map(o => ({
+    id: o.id, assetEntry: o.assetEntry, position: o.position.toArray(),
+    rotation: o.rotation.toArray().slice(0,3), scale: o.scale.toArray(),
+    baseMinY: o.baseMinY, collisionHeight: o.collisionHeight, collisionRadius: o.collisionRadius
+  }))));
+  redoStack = [];
+}
+
+function restoreState(stateJson) {
+  // Clear scene
+  for (const obj of placedObjects) {
+    scene.remove(obj.model);
+  }
+  transformControls.detach();
+  selectedObject = null;
+  placedObjects = [];
+  
+  const states = JSON.parse(stateJson);
+  let loaded = 0;
+  
+  if (states.length === 0) {
+    updateScenePanel();
+    updateInfoPanel();
+    return;
+  }
+  
+  for (const s of states) {
+    const url = resolveUrl(s.assetEntry);
+    gltfLoader.load(url, (gltf) => {
+      const model = gltf.scene;
+      model.position.set(s.position[0], s.position[1], s.position[2]);
+      model.rotation.set(s.rotation[0], s.rotation[1], s.rotation[2]);
+      model.scale.set(s.scale[0], s.scale[1], s.scale[2]);
+      model.castShadow = true;
+      model.receiveShadow = true;
+      model.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+      scene.add(model);
+      
+      placedObjects.push({
+        id: s.id,
+        assetEntry: s.assetEntry,
+        model: model,
+        position: model.position.clone(),
+        rotation: model.rotation.clone(),
+        scale: model.scale.clone(),
+        baseMinY: s.baseMinY || 0,
+        collisionHeight: s.collisionHeight,
+        collisionRadius: s.collisionRadius,
+      });
+      
+      loaded++;
+      if (loaded === states.length) {
+        updateScenePanel();
+        updateInfoPanel();
+      }
+    });
+  }
+}
+
+// ── Info Panel ──
+function updateInfoPanel() {
+  const obj = selectedObject;
+  document.getElementById('infoName').textContent = obj ? obj.assetEntry.filename.replace('.glb','') : 'none';
+  document.getElementById('infoPos').textContent = obj 
+    ? `${obj.position.x.toFixed(1)}, ${obj.position.y.toFixed(1)}, ${obj.position.z.toFixed(1)}`
+    : '—';
+  document.getElementById('infoScale').textContent = obj 
+    ? `${obj.scale.x.toFixed(2)}` : '—';
+  document.getElementById('infoCount').textContent = placedObjects.length;
+}
+
+// ── Scene Panel ──
+function updateScenePanel() {
+  const list = document.getElementById('sceneList');
+  if (placedObjects.length === 0) { list.innerHTML = '—'; return; }
+  list.innerHTML = placedObjects.map(o => {
+    const name = o.assetEntry.filename.replace('.glb','').slice(0, 20);
+    const active = o === selectedObject ? ' active' : '';
+    return `<div class="placed${active}" data-id="${o.id}">${name} · ${o.scale.x.toFixed(1)}x</div>`;
+  }).join('');
+  
+  list.querySelectorAll('.placed').forEach(el => {
+    el.addEventListener('click', () => {
+      const obj = placedObjects.find(o => o.id === el.dataset.id);
+      if (obj) {
+        selectObject(obj);
+        // Move camera to look at object
+        orbitControls.target.copy(obj.position);
+      }
+    });
+  });
+}
+
+// ── Save / Load ──
+function saveScene() {
+  const name = prompt('Scene name:', sceneName);
+  if (!name) return;
+  sceneName = name;
+  
+  const data = {
+    name: sceneName,
+    version: 1,
+    groundSize: groundSize,
+    placements: placedObjects.map(o => ({
+      assetId: o.assetEntry.id,
+      assetFilename: o.assetEntry.filename,
+      assetPath: o.assetEntry.path,
+      assetUrl: resolveUrl(o.assetEntry),
+      category: o.assetEntry.category,
+      position: [o.position.x, o.position.y, o.position.z],
+      rotation: [o.rotation.x, o.rotation.y, o.rotation.z],
+      scale: o.scale.x,
+      baseMinY: o.baseMinY,
+      collisionHeight: o.collisionHeight,
+      collisionRadius: o.collisionRadius,
+    }))
+  };
+  
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${sceneName.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.scene.json`;
+  a.click();
+  
+  // Also save to localStorage
+  localStorage.setItem('sceneEditor_lastScene', JSON.stringify(data));
+  console.log('Scene saved:', data);
+}
+
+function loadScene() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const text = await file.text();
+    const data = JSON.parse(text);
+    loadSceneData(data);
+  };
+  input.click();
+}
+
+function loadLastScene() {
+  const saved = localStorage.getItem('sceneEditor_lastScene');
+  if (saved) {
+    try { loadSceneData(JSON.parse(saved)); } catch(e) {}
+  }
+}
+
+function loadSceneData(data) {
+  // Clear current
+  for (const obj of placedObjects) scene.remove(obj.model);
+  transformControls.detach();
+  selectedObject = null;
+  placedObjects = [];
+  undoStack = [];
+  redoStack = [];
+  
+  sceneName = data.name || 'Untitled';
+  
+  if (!data.placements) return;
+  
+  let loaded = 0;
+  const total = data.placements.length;
+  
+  for (const p of data.placements) {
+    // Find asset entry in DB
+    const entry = db.find(e => e.id === p.assetId || e.path === p.assetPath);
+    if (!entry) { console.warn('Asset not found:', p.assetId); continue; }
+    
+    const url = resolveUrl(entry);
+    gltfLoader.load(url, (gltf) => {
+      const model = gltf.scene;
+      model.position.set(p.position[0], p.position[1], p.position[2]);
+      model.rotation.set(p.rotation[0], p.rotation[1], p.rotation[2]);
+      model.scale.setScalar(p.scale);
+      model.castShadow = true;
+      model.receiveShadow = true;
+      model.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+      
+      const baseMinY = p.baseMinY || 0;
+      // Ensure base sits on ground: position.y = -baseMinY * scale
+      model.position.set(p.position[0], -baseMinY * p.scale, p.position[2]);
+      
+      scene.add(model);
+      
+      placedObjects.push({
+        id: 'obj_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+        assetEntry: entry,
+        model: model,
+        position: model.position.clone(),
+        rotation: model.rotation.clone(),
+        scale: model.scale.clone(),
+        baseMinY: baseMinY,
+        collisionHeight: p.collisionHeight || entry.height,
+        collisionRadius: p.collisionRadius || entry.radius,
+      });
+      
+      loaded++;
+      if (loaded === total) {
+        updateScenePanel();
+        updateInfoPanel();
+        document.getElementById('infoCount').textContent = placedObjects.length;
+      }
+    });
+  }
+}
+
+// ── Delete selected ──
+function deleteSelected() {
+  if (!selectedObject) return;
+  pushUndo();
+  scene.remove(selectedObject.model);
+  placedObjects = placedObjects.filter(o => o !== selectedObject);
+  transformControls.detach();
+  selectedObject = null;
+  updateScenePanel();
+  updateInfoPanel();
+}
+
+// ── Click on ground to place ──
+viewer.addEventListener('click', (e) => {
+  if (toolMode !== 'select') return;
+  if (!currentAsset) return;
+  
+  // Only place if clicking on ground (not on a placed object)
+  const mouse = new THREE.Vector2();
+  mouse.x = (e.clientX / viewer.clientWidth) * 2 - 1;
+  mouse.y = -(e.clientY / viewer.clientHeight) * 2 + 1;
+  
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObject(ground);
+  
+  if (intersects.length > 0) {
+    const point = intersects[0].point;
+    if (snapEnabled) {
+      point.x = Math.round(point.x / snapValue) * snapValue;
+      point.z = Math.round(point.z / snapValue) * snapValue;
+    }
+    point.y = 0;
+    placeAsset(currentAsset, point);
+  }
+});
+
+// ── Keyboard shortcuts ──
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  
+  switch (e.key.toLowerCase()) {
+    case 'q': setToolMode('select'); break;
+    case 'w': setToolMode('translate'); break;
+    case 'e': setToolMode('rotate'); break;
+    case 'r': setToolMode('scale'); break;
+    case 'escape': deselectAll(); break;
+    case 'delete':
+    case 'backspace': deleteSelected(); break;
+    case 'z':
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        // undo
+        if (undoStack.length > 0) {
+          redoStack.push(undoStack.pop());
+          if (undoStack.length > 0) {
+            restoreState(undoStack[undoStack.length - 1]);
+          } else {
+            // Clear scene
+            for (const obj of placedObjects) scene.remove(obj.model);
+            transformControls.detach();
+            selectedObject = null;
+            placedObjects = [];
+            updateScenePanel();
+            updateInfoPanel();
+          }
+        }
+      }
+      break;
+    case 'y':
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        if (redoStack.length > 0) {
+          undoStack.push(redoStack.pop());
+          restoreState(undoStack[undoStack.length - 1]);
+        }
+      }
+      break;
+    case 's':
+      if ((e.ctrlKey || e.metaKey) && !e.shift) {
+        e.preventDefault();
+        saveScene();
+      }
+      break;
+  }
+});
+
+// ── Toolbar buttons ──
+document.getElementById('btnSelect').addEventListener('click', () => setToolMode('select'));
+document.getElementById('btnMove').addEventListener('click', () => setToolMode('translate'));
+document.getElementById('btnRotate').addEventListener('click', () => setToolMode('rotate'));
+document.getElementById('btnScale').addEventListener('click', () => setToolMode('scale'));
+document.getElementById('btnUndo').addEventListener('click', () => {
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', ctrlKey: true }));
+});
+document.getElementById('btnRedo').addEventListener('click', () => {
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'y', ctrlKey: true }));
+});
+document.getElementById('btnSnap').addEventListener('click', () => {
+  snapEnabled = !snapEnabled;
+  document.getElementById('btnSnap').textContent = 'Snap: ' + (snapEnabled ? 'ON' : 'OFF');
+  setToolMode(toolMode); // refresh snap
+});
+document.getElementById('snapVal').addEventListener('change', (e) => {
+  snapValue = parseFloat(e.target.value) || 1;
+  setToolMode(toolMode);
+});
+document.getElementById('btnClear').addEventListener('click', () => {
+  if (!confirm(`Clear all ${placedObjects.length} placed objects?`)) return;
+  pushUndo();
+  for (const obj of placedObjects) scene.remove(obj.model);
+  transformControls.detach();
+  selectedObject = null;
+  placedObjects = [];
+  updateScenePanel();
+  updateInfoPanel();
+});
+document.getElementById('btnSave').addEventListener('click', saveScene);
+document.getElementById('btnLoad').addEventListener('click', loadScene);
+
+// ── Asset list ──
+let selectedCategory = 'all';
+let searchQuery = '';
+
+function filterAssets() {
+  let filtered = db;
+  if (selectedCategory !== 'all') {
+    if (selectedCategory === 'compressed') {
+      filtered = filtered.filter(e => e.source === 'compressed');
+    } else {
+      filtered = filtered.filter(e => e.category === selectedCategory);
+    }
+  }
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(e => 
+      e.filename.toLowerCase().includes(q) || 
+      e.tags.some(t => t.includes(q)) ||
+      e.source.includes(q)
+    );
+  }
+  return filtered;
+}
+
+function updateAssetListHighlight() {
+  document.querySelectorAll('.item').forEach(el => {
+    el.classList.toggle('selected', el.dataset.id === currentAsset?.id);
+  });
+}
+
+function renderAssetList() {
+  const filtered = filterAssets();
+  document.getElementById('stats').textContent = `${filtered.length} of ${db.length} assets`;
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  for (const e of filtered.slice(0, 400)) {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.dataset.id = e.id;
+    if (currentAsset === e) div.classList.add('selected');
+    const name = e.filename.replace('.glb','');
+    div.innerHTML = `
+      <div style="flex:1;min-width:0">
+        <div class="name" title="${name}">${name}</div>
+        <div class="meta">${e.category} · ${e.fileSizeKB}KB · ${e.source}</div>
+      </div>
+    `;
+    div.addEventListener('click', () => {
+      currentAsset = e;
+      showPreview(e);
+      renderAssetList();
+    });
+    list.appendChild(div);
+  }
+}
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchQuery = e.target.value;
+  renderAssetList();
+});
+document.querySelectorAll('#filters button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#filters button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedCategory = btn.dataset.cat;
+    renderAssetList();
+  });
+});
+
+renderAssetList();
+
+// ── Render loop ──
+function animate() {
+  requestAnimationFrame(animate);
+  orbitControls.update();
+  const w = viewer.clientWidth, h = viewer.clientHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / Math.max(h, 1);
+  camera.updateProjectionMatrix();
+  renderer.render(scene, camera);
+  
+  // Preview viewport — auto-rotate + render
+  if (previewModel) previewGroup.rotation.y += 0.008;
+  const pw = previewContainer.clientWidth;
+  previewRenderer.setSize(pw, 140);
+  previewCamera.aspect = pw / 140;
+  previewCamera.updateProjectionMatrix();
+  previewRenderer.render(previewScene, previewCamera);
+}
+animate();
+
+// ── Resize ──
+window.addEventListener('resize', () => {});
+
+// ── Try load last scene ──
+setTimeout(loadLastScene, 500);
+
+console.log('Scene Editor ready. Click an asset in the sidebar, then click the ground to place.');
+console.log('Q=select W=move E=rotate R=scale  Del=remove  Ctrl+S=save  Ctrl+Z=undo');
+</script>
+</body>
+</html>

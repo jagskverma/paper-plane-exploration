@@ -96,6 +96,8 @@ export class FlightController {
       up: obstacle.up.clone().normalize(),
       radius: obstacle.radius,
       height: obstacle.height,
+      extents: obstacle.extents?.clone(),
+      boxRotation: obstacle.boxRotation?.clone(),
     }));
   }
 
@@ -209,7 +211,9 @@ export class FlightController {
     for (const obstacle of this.collisionObstacles) {
       const closestPoint = this.closestObstaclePoint(obstacle);
       const offset = this.state.position.clone().sub(closestPoint);
-      const minDistance = obstacle.radius + planeRadius;
+      const minDistance = obstacle.kind === "box"
+        ? planeRadius
+        : obstacle.radius + planeRadius;
       const distanceSq = offset.lengthSq();
 
       if (distanceSq >= minDistance * minDistance) continue;

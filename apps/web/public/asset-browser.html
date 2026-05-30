@@ -71,6 +71,7 @@ body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #eee; dis
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 // Load database
 const resp = await fetch('/glb-database.json');
@@ -146,6 +147,11 @@ const modelGroup = new THREE.Group();
 scene.add(modelGroup);
 
 const loader = new GLTFLoader();
+
+// Draco decoder for compressed meshes
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('/draco/');
+loader.setDRACOLoader(dracoLoader);
 
 function loadModel(entry) {
   document.getElementById('loading').style.display = 'block';

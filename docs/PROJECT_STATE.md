@@ -146,6 +146,11 @@ Available local asset library is documented in `docs/references/ASSET_LIBRARY.md
 - [x] Added explicit runtime scenery asset library plus `ACTIVE_SCENERY_ASSET_IDS` swap list
 - [x] Switched active scenery to converted SimpleNature assets
 - [x] Increased streamer density budget; runtime verified at 384 visible scenery objects and 13 active asset types
+- [x] Integrated Hermes expanded asset database and OBB collision support
+- [x] Fixed OBB collision cloning so `extents` and `boxRotation` survive `setCollisionObstacles`
+- [x] Fixed OBB early-contact collision by using plane clearance only after clamping to the box surface
+- [x] Bounded active runtime palette to 39 assets after 218 active assets delayed scene readiness
+- [x] Runtime verified at 58 scenery chunks, 800 visible scenery objects, 9 collision candidates, 39 active asset types
 - [ ] Playtest density and popping while turning at low altitude
 - [ ] Add rare landmark and sparse settlement placement rules after woodland streaming feels right
 
