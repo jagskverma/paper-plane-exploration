@@ -19,7 +19,9 @@ body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #eee; dis
 .item:hover { background: #1a2744; }
 .item.selected { background: #0f3460; border-color: #1a5276; }
 .item.picked { background: #1a2a1a; }
-.item .name { font-weight: 600; color: #ccc; }
+.item .name { font-weight: 600; color: #ccc; flex:1 }
+.item .star { cursor: pointer; font-size: 14px; padding: 0 2px; user-select: none; }
+.item .star:hover { transform: scale(1.2); }
 .item .meta { font-size: 10px; color: #777; margin-top: 1px; }
 .item .dim { color: #5a8; }
 #viewer { flex: 1; position: relative; }
@@ -236,16 +238,29 @@ function renderList() {
     const sel = selectedIds.has(e.id);
     div.className = 'item' + (currentModel === e ? ' selected' : '') + (sel ? ' picked' : '');
     div.style.borderLeft = sel ? '3px solid #4a4' : '3px solid transparent';
+    div.style.display = 'flex';
+    div.style.justifyContent = 'space-between';
+    div.style.alignItems = 'flex-start';
     div.innerHTML = `
-      <div class="name"><span style="cursor:pointer;margin-right:4px" onclick="event.stopPropagation();toggleSelect('${e.id}')">${sel ? '⭐' : '☆'}</span> ${e.filename.replace('.glb','')}</div>
-      <div class="meta">
-        <span class="dim">${e.width}m×${e.height}m×${e.depth}m</span> · 
-        ${e.category} · ${e.fileSizeKB}KB · ${e.source}
-      </div>`;
-    div.onclick = () => {
+      <div style="flex:1;min-width:0">
+        <div class="name">${e.filename.replace('.glb','')}</div>
+        <div class="meta">
+          <span class="dim">${e.width}m×${e.height}m×${e.depth}m</span> · 
+          ${e.category} · ${e.fileSizeKB}KB · ${e.source}
+        </div>
+      </div>
+      <span class="star" data-id="${e.id}" title="Toggle selection">${sel ? '⭐' : '☆'}</span>
+    `;
+    div.onclick = (ev) => {
+      // Ignore clicks on the star
+      if (ev.target.classList.contains('star')) return;
       document.querySelectorAll('.item.selected').forEach(el => el.classList.remove('selected'));
       div.classList.add('selected');
       loadModel(e);
+    };
+    div.querySelector('.star').onclick = (ev) => {
+      ev.stopPropagation();
+      toggleSelect(e.id);
     };
     list.appendChild(div);
   }
