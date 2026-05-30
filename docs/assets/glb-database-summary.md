@@ -1,7 +1,7 @@
 # GLB Asset Database Summary
 
 > Generated: 2026-05-30
-> Database: `docs/assets/glb-database.json` — 4460 entries, 0 parse errors
+> Database: `docs/assets/glb-database.json` — 4492 entries, 0 parse errors
 
 ## Sources
 
@@ -11,18 +11,18 @@
 | polypizza/buildings | 255 |
 | polypizza/nature | 286 |
 | polypizza/scenes | 190 |
-| public | 3002 |
+| public | 3034 |
 | split-trees | 421 |
 
-**Total:** 4460 files, 1349.1 MB
+**Total:** 4492 files, 1387.8 MB
 
 ## Scale Distribution (bounding sphere radius)
 
 | Range | Count | % |
 |-------|-------|---|
-| Tiny (< 0.5m) | 1959 | 43% |
-| Small (0.5-2m) | 1754 | 39% |
-| Medium (2-10m) | 366 | 8% |
+| Tiny (< 0.5m) | 1981 | 44% |
+| Small (0.5-2m) | 1762 | 39% |
+| Medium (2-10m) | 368 | 8% |
 | Large (10-50m) | 205 | 4% |
 | Huge (50m+) | 176 | 3% |
 
@@ -32,9 +32,9 @@
 |----------|-------|---|
 | unknown | 1646 | 36% |
 | structure | 726 | 16% |
-| tree | 627 | 14% |
-| rock | 494 | 11% |
-| bush | 460 | 10% |
+| tree | 650 | 14% |
+| rock | 497 | 11% |
+| bush | 466 | 10% |
 | prop | 257 | 5% |
 | vehicle | 205 | 4% |
 | landmark | 24 | 0% |
@@ -83,11 +83,11 @@ All objects are normalized to **3.0m target height**. The `suggestedScale` field
 
 | Feature | Files with |
 |---------|-----------|
-| Normals | 4401 |
+| Normals | 4433 |
 | Colors | 106 |
-| UVs | 3642 |
+| UVs | 3661 |
 | Multi-mesh | 493 |
-| Multi-material | 2220 |
+| Multi-material | 2241 |
 
 ## Query Examples
 

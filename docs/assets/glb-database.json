@@ -140163,5 +140163,1038 @@
       "bush"
     ],
     "suggestedScale": 8.31
+  },
+  {
+    "id": "apps-web-public-scenery-assets-pinetree_1",
+    "filename": "PineTree_1.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/PineTree_1.glb",
+    "fileSizeKB": 2371.9,
+    "width": 0.013,
+    "height": 0.009,
+    "depth": 0.045,
+    "radius": 0.023,
+    "vertexCount": 912,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.007,
+      -0.004,
+      0.0
+    ],
+    "max": [
+      0.006,
+      0.004,
+      0.045
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 333.333
+  },
+  {
+    "id": "apps-web-public-scenery-assets-palmtree_2",
+    "filename": "PalmTree_2.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/PalmTree_2.glb",
+    "fileSizeKB": 1037.2,
+    "width": 0.018,
+    "height": 0.006,
+    "depth": 0.026,
+    "radius": 0.013,
+    "vertexCount": 98,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.002,
+      -0.002,
+      -0.0
+    ],
+    "max": [
+      0.016,
+      0.004,
+      0.026
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 500.0
+  },
+  {
+    "id": "apps-web-public-scenery-assets-pinetree_3",
+    "filename": "PineTree_3.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/PineTree_3.glb",
+    "fileSizeKB": 2367.7,
+    "width": 0.011,
+    "height": 0.008,
+    "depth": 0.023,
+    "radius": 0.012,
+    "vertexCount": 912,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.006,
+      -0.004,
+      0.0
+    ],
+    "max": [
+      0.005,
+      0.004,
+      0.023
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 375.0
+  },
+  {
+    "id": "apps-web-public-scenery-assets-pinetree_2",
+    "filename": "PineTree_2.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/PineTree_2.glb",
+    "fileSizeKB": 2390.7,
+    "width": 0.013,
+    "height": 0.009,
+    "depth": 0.069,
+    "radius": 0.035,
+    "vertexCount": 976,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.006,
+      -0.004,
+      0.0
+    ],
+    "max": [
+      0.007,
+      0.005,
+      0.069
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 333.333
+  },
+  {
+    "id": "apps-web-public-scenery-assets-palmtree_1",
+    "filename": "PalmTree_1.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/PalmTree_1.glb",
+    "fileSizeKB": 1040.3,
+    "width": 0.004,
+    "height": 0.004,
+    "depth": 0.039,
+    "radius": 0.02,
+    "vertexCount": 118,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.002,
+      -0.002,
+      0.0
+    ],
+    "max": [
+      0.002,
+      0.003,
+      0.039
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 750.0
+  },
+  {
+    "id": "apps-web-public-scenery-assets-deadtree_2",
+    "filename": "DeadTree_2.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/DeadTree_2.glb",
+    "fileSizeKB": 2043.0,
+    "width": 0.034,
+    "height": 0.014,
+    "depth": 0.062,
+    "radius": 0.031,
+    "vertexCount": 3266,
+    "meshCount": 1,
+    "materialCount": 1,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.018,
+      -0.006,
+      -0.0
+    ],
+    "max": [
+      0.016,
+      0.008,
+      0.062
+    ],
+    "category": "tree",
+    "tags": [
+      "dead",
+      "tree"
+    ],
+    "suggestedScale": 214.286
+  },
+  {
+    "id": "apps-web-public-scenery-assets-mapletree_1",
+    "filename": "MapleTree_1.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/MapleTree_1.glb",
+    "fileSizeKB": 2632.0,
+    "width": 0.054,
+    "height": 0.033,
+    "depth": 0.064,
+    "radius": 0.032,
+    "vertexCount": 1815,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.016,
+      -0.019,
+      0.0
+    ],
+    "max": [
+      0.038,
+      0.014,
+      0.064
+    ],
+    "category": "tree",
+    "tags": [
+      "scene",
+      "tree"
+    ],
+    "suggestedScale": 90.909
+  },
+  {
+    "id": "apps-web-public-scenery-assets-deadtree_3",
+    "filename": "DeadTree_3.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/DeadTree_3.glb",
+    "fileSizeKB": 2032.4,
+    "width": 0.042,
+    "height": 0.017,
+    "depth": 0.05,
+    "radius": 0.025,
+    "vertexCount": 3004,
+    "meshCount": 1,
+    "materialCount": 1,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.014,
+      -0.008,
+      -0.0
+    ],
+    "max": [
+      0.029,
+      0.009,
+      0.049
+    ],
+    "category": "tree",
+    "tags": [
+      "dead",
+      "tree"
+    ],
+    "suggestedScale": 176.471
+  },
+  {
+    "id": "apps-web-public-scenery-assets-deadtree_1",
+    "filename": "DeadTree_1.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/DeadTree_1.glb",
+    "fileSizeKB": 2029.1,
+    "width": 0.031,
+    "height": 0.013,
+    "depth": 0.062,
+    "radius": 0.031,
+    "vertexCount": 2926,
+    "meshCount": 1,
+    "materialCount": 1,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.017,
+      -0.006,
+      -0.0
+    ],
+    "max": [
+      0.014,
+      0.007,
+      0.062
+    ],
+    "category": "tree",
+    "tags": [
+      "dead",
+      "tree"
+    ],
+    "suggestedScale": 230.769
+  },
+  {
+    "id": "apps-web-public-scenery-assets-mapletree_3",
+    "filename": "MapleTree_3.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/MapleTree_3.glb",
+    "fileSizeKB": 2740.0,
+    "width": 0.082,
+    "height": 0.048,
+    "depth": 0.063,
+    "radius": 0.041,
+    "vertexCount": 2999,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.04,
+      -0.019,
+      0.0
+    ],
+    "max": [
+      0.041,
+      0.029,
+      0.063
+    ],
+    "category": "tree",
+    "tags": [
+      "scene",
+      "tree"
+    ],
+    "suggestedScale": 62.5
+  },
+  {
+    "id": "apps-web-public-scenery-assets-mapletree_2",
+    "filename": "MapleTree_2.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/MapleTree_2.glb",
+    "fileSizeKB": 2674.2,
+    "width": 0.061,
+    "height": 0.05,
+    "depth": 0.063,
+    "radius": 0.032,
+    "vertexCount": 2122,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.041,
+      -0.022,
+      0.0
+    ],
+    "max": [
+      0.02,
+      0.029,
+      0.063
+    ],
+    "category": "tree",
+    "tags": [
+      "scene",
+      "tree"
+    ],
+    "suggestedScale": 60.0
+  },
+  {
+    "id": "apps-web-public-scenery-assets-smalltree_02",
+    "filename": "SmallTree_02.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/SmallTree_02.glb",
+    "fileSizeKB": 28.7,
+    "width": 1.87,
+    "height": 2.784,
+    "depth": 1.343,
+    "radius": 1.392,
+    "vertexCount": 819,
+    "meshCount": 1,
+    "materialCount": 1,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      1.151,
+      -0.001,
+      -0.582
+    ],
+    "max": [
+      3.021,
+      2.782,
+      0.761
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 1.078
+  },
+  {
+    "id": "apps-web-public-scenery-assets-smalltree_01",
+    "filename": "SmallTree_01.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/SmallTree_01.glb",
+    "fileSizeKB": 17.6,
+    "width": 1.871,
+    "height": 2.784,
+    "depth": 0.938,
+    "radius": 1.392,
+    "vertexCount": 485,
+    "meshCount": 1,
+    "materialCount": 1,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.85,
+      -0.001,
+      -0.582
+    ],
+    "max": [
+      1.021,
+      2.782,
+      0.356
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 1.078
+  },
+  {
+    "id": "apps-web-public-scenery-assets-birchtree_1",
+    "filename": "BirchTree_1.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/BirchTree_1.glb",
+    "fileSizeKB": 2931.8,
+    "width": 0.018,
+    "height": 0.012,
+    "depth": 0.049,
+    "radius": 0.024,
+    "vertexCount": 1634,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.008,
+      -0.006,
+      -0.0
+    ],
+    "max": [
+      0.01,
+      0.005,
+      0.049
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 250.0
+  },
+  {
+    "id": "apps-web-public-scenery-assets-normaltree_1",
+    "filename": "NormalTree_1.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/NormalTree_1.glb",
+    "fileSizeKB": 2358.1,
+    "width": 0.031,
+    "height": 0.013,
+    "depth": 0.062,
+    "radius": 0.031,
+    "vertexCount": 2926,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.017,
+      -0.006,
+      -0.0
+    ],
+    "max": [
+      0.014,
+      0.007,
+      0.062
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 230.769
+  },
+  {
+    "id": "apps-web-public-scenery-assets-birchtree_2",
+    "filename": "BirchTree_2.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/BirchTree_2.glb",
+    "fileSizeKB": 3038.8,
+    "width": 0.025,
+    "height": 0.024,
+    "depth": 0.07,
+    "radius": 0.035,
+    "vertexCount": 3343,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.015,
+      -0.014,
+      -0.0
+    ],
+    "max": [
+      0.01,
+      0.011,
+      0.07
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 125.0
+  },
+  {
+    "id": "apps-web-public-scenery-assets-normaltree_2",
+    "filename": "NormalTree_2.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/NormalTree_2.glb",
+    "fileSizeKB": 2304.4,
+    "width": 0.034,
+    "height": 0.014,
+    "depth": 0.062,
+    "radius": 0.031,
+    "vertexCount": 3266,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.018,
+      -0.006,
+      -0.0
+    ],
+    "max": [
+      0.016,
+      0.008,
+      0.062
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 214.286
+  },
+  {
+    "id": "apps-web-public-scenery-assets-normaltree_3",
+    "filename": "NormalTree_3.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/NormalTree_3.glb",
+    "fileSizeKB": 2254.7,
+    "width": 0.042,
+    "height": 0.017,
+    "depth": 0.05,
+    "radius": 0.025,
+    "vertexCount": 3004,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.014,
+      -0.008,
+      -0.0
+    ],
+    "max": [
+      0.029,
+      0.009,
+      0.049
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 176.471
+  },
+  {
+    "id": "apps-web-public-scenery-assets-birchtree_3",
+    "filename": "BirchTree_3.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/BirchTree_3.glb",
+    "fileSizeKB": 3119.3,
+    "width": 0.029,
+    "height": 0.014,
+    "depth": 0.056,
+    "radius": 0.028,
+    "vertexCount": 1646,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": true,
+    "min": [
+      -0.014,
+      -0.009,
+      -0.0
+    ],
+    "max": [
+      0.014,
+      0.005,
+      0.055
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 214.286
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-tree4",
+    "filename": "Tree4.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Tree4.glb",
+    "fileSizeKB": 46.9,
+    "width": 1.182,
+    "height": 5.574,
+    "depth": 5.53,
+    "radius": 2.787,
+    "vertexCount": 693,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -0.212,
+      -0.085,
+      -2.297
+    ],
+    "max": [
+      0.97,
+      5.489,
+      3.233
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 0.538
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-tree3",
+    "filename": "Tree3.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Tree3.glb",
+    "fileSizeKB": 22.4,
+    "width": 0.317,
+    "height": 2.211,
+    "depth": 2.505,
+    "radius": 1.252,
+    "vertexCount": 606,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -0.163,
+      -0.02,
+      -1.87
+    ],
+    "max": [
+      0.154,
+      2.191,
+      0.635
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 1.357
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-bush1",
+    "filename": "Bush1.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Bush1.glb",
+    "fileSizeKB": 6.8,
+    "width": 1.074,
+    "height": 0.995,
+    "depth": 1.074,
+    "radius": 0.537,
+    "vertexCount": 109,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -0.482,
+      0.479,
+      -0.544
+    ],
+    "max": [
+      0.592,
+      1.474,
+      0.53
+    ],
+    "category": "bush",
+    "tags": [
+      "bush",
+      "vehicle"
+    ],
+    "suggestedScale": 3.015
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-tree2",
+    "filename": "Tree2.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Tree2.glb",
+    "fileSizeKB": 31.7,
+    "width": 2.895,
+    "height": 1.701,
+    "depth": 6.429,
+    "radius": 3.215,
+    "vertexCount": 536,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -1.388,
+      3.194,
+      -3.415
+    ],
+    "max": [
+      1.507,
+      4.895,
+      3.014
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 1.764
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-bush3",
+    "filename": "Bush3.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Bush3.glb",
+    "fileSizeKB": 7.3,
+    "width": 0.855,
+    "height": 0.813,
+    "depth": 0.956,
+    "radius": 0.478,
+    "vertexCount": 72,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -0.476,
+      0.427,
+      -0.479
+    ],
+    "max": [
+      0.379,
+      1.24,
+      0.477
+    ],
+    "category": "bush",
+    "tags": [
+      "bush",
+      "vehicle"
+    ],
+    "suggestedScale": 3.69
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-bush2",
+    "filename": "Bush2.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Bush2.glb",
+    "fileSizeKB": 12.3,
+    "width": 0.997,
+    "height": 0.589,
+    "depth": 0.771,
+    "radius": 0.498,
+    "vertexCount": 172,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -0.592,
+      0.342,
+      -0.357
+    ],
+    "max": [
+      0.405,
+      0.931,
+      0.415
+    ],
+    "category": "bush",
+    "tags": [
+      "bush",
+      "vehicle"
+    ],
+    "suggestedScale": 5.093
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-tree1",
+    "filename": "Tree1.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Tree1.glb",
+    "fileSizeKB": 25.2,
+    "width": 2.067,
+    "height": 2.409,
+    "depth": 2.988,
+    "radius": 1.494,
+    "vertexCount": 518,
+    "meshCount": 1,
+    "materialCount": 2,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -1.075,
+      1.626,
+      -1.353
+    ],
+    "max": [
+      0.993,
+      4.035,
+      1.635
+    ],
+    "category": "tree",
+    "tags": [
+      "tree"
+    ],
+    "suggestedScale": 1.245
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-grass1",
+    "filename": "Grass1.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Grass1.glb",
+    "fileSizeKB": 5.7,
+    "width": 0.204,
+    "height": 0.212,
+    "depth": 0.01,
+    "radius": 0.106,
+    "vertexCount": 176,
+    "meshCount": 1,
+    "materialCount": 1,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -0.102,
+      -0.006,
+      -0.005
+    ],
+    "max": [
+      0.102,
+      0.206,
+      0.005
+    ],
+    "category": "bush",
+    "tags": [
+      "bush"
+    ],
+    "suggestedScale": 14.151
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-grass2",
+    "filename": "Grass2.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Grass2.glb",
+    "fileSizeKB": 10.8,
+    "width": 0.165,
+    "height": 0.234,
+    "depth": 0.21,
+    "radius": 0.117,
+    "vertexCount": 368,
+    "meshCount": 1,
+    "materialCount": 1,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -0.069,
+      -0.003,
+      -0.1
+    ],
+    "max": [
+      0.096,
+      0.231,
+      0.11
+    ],
+    "category": "bush",
+    "tags": [
+      "bush"
+    ],
+    "suggestedScale": 12.821
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-grass3",
+    "filename": "Grass3.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Grass3.glb",
+    "fileSizeKB": 10.6,
+    "width": 0.213,
+    "height": 0.327,
+    "depth": 0.254,
+    "radius": 0.164,
+    "vertexCount": 364,
+    "meshCount": 1,
+    "materialCount": 1,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -0.097,
+      -0.009,
+      -0.169
+    ],
+    "max": [
+      0.115,
+      0.319,
+      0.084
+    ],
+    "category": "bush",
+    "tags": [
+      "bush"
+    ],
+    "suggestedScale": 9.174
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-rock2",
+    "filename": "Rock2.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Rock2.glb",
+    "fileSizeKB": 3.6,
+    "width": 1.419,
+    "height": 1.068,
+    "depth": 2.044,
+    "radius": 1.022,
+    "vertexCount": 102,
+    "meshCount": 1,
+    "materialCount": 1,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -0.618,
+      -0.136,
+      -1.049
+    ],
+    "max": [
+      0.801,
+      0.932,
+      0.995
+    ],
+    "category": "rock",
+    "tags": [
+      "rock"
+    ],
+    "suggestedScale": 2.809
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-rock3",
+    "filename": "Rock3.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Rock3.glb",
+    "fileSizeKB": 3.2,
+    "width": 1.746,
+    "height": 2.092,
+    "depth": 2.658,
+    "radius": 1.329,
+    "vertexCount": 84,
+    "meshCount": 1,
+    "materialCount": 1,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -0.823,
+      -0.199,
+      -1.163
+    ],
+    "max": [
+      0.923,
+      1.893,
+      1.495
+    ],
+    "category": "rock",
+    "tags": [
+      "rock"
+    ],
+    "suggestedScale": 1.434
+  },
+  {
+    "id": "apps-web-public-scenery-assets-simplenature-rock1",
+    "filename": "Rock1.glb",
+    "source": "public",
+    "path": "apps/web/public/scenery-assets/simplenature/Rock1.glb",
+    "fileSizeKB": 3.6,
+    "width": 2.141,
+    "height": 1.496,
+    "depth": 2.598,
+    "radius": 1.299,
+    "vertexCount": 102,
+    "meshCount": 1,
+    "materialCount": 1,
+    "hasNormals": true,
+    "hasColors": false,
+    "hasUVs": false,
+    "min": [
+      -1.073,
+      -0.048,
+      -1.296
+    ],
+    "max": [
+      1.069,
+      1.448,
+      1.301
+    ],
+    "category": "rock",
+    "tags": [
+      "rock"
+    ],
+    "suggestedScale": 2.005
   }
 ]
