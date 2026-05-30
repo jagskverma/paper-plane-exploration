@@ -32,10 +32,10 @@ interface SceneryStreamerProps {
   onCollisionObstacles?: (obstacles: FlightCollisionObstacle[]) => void;
 }
 
-const FORWARD_CHUNK_BUDGET = 44;
-const TURN_BUFFER_CHUNK_BUDGET = 28;
-const PLACEMENTS_PER_CHUNK = 8;
-const VISIBLE_OBJECT_BUDGET = 420;
+const FORWARD_CHUNK_BUDGET = 52;
+const TURN_BUFFER_CHUNK_BUDGET = 32;
+const PLACEMENTS_PER_CHUNK = 16;
+const VISIBLE_OBJECT_BUDGET = 800;
 const COLLISION_RADIUS = 240;
 const MAX_FORWARD_CHUNK_ANGLE = 0.75;
 const MAX_TURN_BUFFER_ANGLE = 0.42;
