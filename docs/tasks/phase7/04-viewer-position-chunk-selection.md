@@ -32,12 +32,12 @@ Chunk streaming requires selecting which chunks to generate and render. A simple
 
 # Acceptance Criteria
 
-- [x] `pnpm lint` and `pnpm build` pass.
-- [x] Function is pure and deterministic.
-- [x] Returns array of ChunkIds, no duplicates.
-- [x] All returned chunks are valid (pass `validateChunkId`).
-- [x] Covers all 6 faces with at least some chunks.
-- [x] Does not import from `flight/`.
+- [ ] `pnpm lint` and `pnpm build` pass.
+- [ ] Function is pure and deterministic.
+- [ ] Returns array of ChunkIds, no duplicates.
+- [ ] All returned chunks are valid (pass `validateChunkId`).
+- [ ] Covers all 6 faces with at least some chunks.
+- [ ] Does not import from `flight/`.
 
 # Non-Goals
 

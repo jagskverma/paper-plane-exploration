@@ -18,7 +18,7 @@ export interface ChunkId {
 
 /** Deterministic string key for a chunk. */
 export function chunkKey(id: ChunkId): string {
-  validateChunkId(id);
+  assertValidChunkId(id);
   return `f${id.face}:l${id.level}:x${id.x}:y${id.y}`;
 }
 
@@ -40,23 +40,29 @@ export function chunksPerAxis(level: number): number {
   if (!Number.isInteger(level) || level < 0) {
     throw new Error(`Invalid level: ${level}`);
   }
-  return 1 << level;
+  return 2 ** level;
 }
 
 /** Validate a ChunkId. Returns false if any field is out of range. */
 export function validateChunkId(id: ChunkId): boolean {
   if (!Number.isInteger(id.face) || id.face < 0 || id.face > 5) return false;
   if (!Number.isInteger(id.level) || id.level < 0) return false;
-  const perAxis = 1 << id.level;
+  const perAxis = 2 ** id.level;
   if (!Number.isInteger(id.x) || id.x < 0 || id.x >= perAxis) return false;
   if (!Number.isInteger(id.y) || id.y < 0 || id.y >= perAxis) return false;
   return true;
 }
 
+function assertValidChunkId(id: ChunkId) {
+  if (!validateChunkId(id)) {
+    throw new Error(`Invalid chunk id: ${JSON.stringify(id)}`);
+  }
+}
+
 /** Normalized UV bounds [0,1] for a chunk on its face. */
 export function chunkUvBounds(id: ChunkId): { u0: number; v0: number; u1: number; v1: number } {
-  validateChunkId(id);
-  const tiles = 1 << id.level;
+  assertValidChunkId(id);
+  const tiles = 2 ** id.level;
   return {
     u0: id.x / tiles,
     v0: id.y / tiles,
@@ -67,7 +73,7 @@ export function chunkUvBounds(id: ChunkId): { u0: number; v0: number; u1: number
 
 /** Parent chunk at one level coarser. Returns null at level 0. */
 export function parentChunk(id: ChunkId): ChunkId | null {
-  validateChunkId(id);
+  assertValidChunkId(id);
   if (id.level === 0) return null;
   return {
     face: id.face,
@@ -83,7 +89,7 @@ export function parentChunk(id: ChunkId): ChunkId | null {
  *        SW (lower x, higher y), SE (higher x, higher y).
  */
 export function childChunks(id: ChunkId): ChunkId[] {
-  validateChunkId(id);
+  assertValidChunkId(id);
   const bx = id.x * 2;
   const by = id.y * 2;
   const level = id.level + 1;

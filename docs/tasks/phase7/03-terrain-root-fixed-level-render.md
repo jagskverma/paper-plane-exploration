@@ -32,11 +32,11 @@ Before dynamic chunk selection or caching, we need a simple render target that p
 
 # Acceptance Criteria
 
-- [x] `pnpm lint` and `pnpm build` pass from `apps/web`.
-- [x] Component renders without runtime errors when added to the scene (even if behind a flag).
-- [x] Chunks cover all 6 cube faces.
-- [x] No visible gaps between adjacent same-face chunks.
-- [x] No imports from `world/`, `flight/`, or `rendering/`.
+- [ ] `pnpm lint` and `pnpm build` pass from `apps/web`.
+- [ ] Component renders without runtime errors when added to the scene (even if behind a flag).
+- [ ] Chunks cover all 6 cube faces.
+- [ ] No visible gaps between adjacent same-face chunks.
+- [ ] No imports from `world/`, `flight/`, or `rendering/`.
 
 # Non-Goals
 

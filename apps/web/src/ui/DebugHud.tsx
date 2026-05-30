@@ -1,11 +1,13 @@
 import { useRef, useEffect } from "react";
 import type { FlightState } from "../flight/FlightController";
+import type { TerrainDebugMetrics } from "../core/terrainMetricsRef";
 
 interface DebugHudProps {
   getState: () => FlightState | null;
+  getTerrainMetrics?: () => TerrainDebugMetrics | null;
 }
 
-export function DebugHud({ getState }: DebugHudProps) {
+export function DebugHud({ getState, getTerrainMetrics }: DebugHudProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -13,6 +15,7 @@ export function DebugHud({ getState }: DebugHudProps) {
       if (!ref.current) return;
       const s = getState();
       if (!s) return;
+      const terrain = getTerrainMetrics?.() ?? null;
       const dist = Math.sqrt(
         s.position.x * s.position.x +
         s.position.y * s.position.y +
@@ -30,6 +33,16 @@ export function DebugHud({ getState }: DebugHudProps) {
       const cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
       euler.z = Math.atan2(siny_cosp, cosy_cosp);
 
+      const terrainText = terrain
+        ? ` | terrain: ${terrain.visibleChunks} visible, ` +
+          `${terrain.generatedChunks} generated, ` +
+          `${terrain.cacheEntries} cached, ` +
+          `${terrain.approximateVertices} verts` +
+          (terrain.sceneryObjects !== undefined
+            ? ` | scenery: ${terrain.sceneryObjects}`
+            : "")
+        : "";
+
       ref.current.textContent =
         `AGL: ${s.altitude.toFixed(1)}m | ` +
         `speed: ${s.speed.toFixed(1)}m/s | ` +
@@ -37,10 +50,11 @@ export function DebugHud({ getState }: DebugHudProps) {
         `pitch: ${(s.pitchAngle * 180 / Math.PI).toFixed(0)}deg | ` +
         `dist: ${dist.toFixed(0)} | ` +
         `rot: (${euler.x.toFixed(2)},${euler.y.toFixed(2)},${euler.z.toFixed(2)}) | ` +
-        `pos: (${s.position.x.toFixed(0)},${s.position.y.toFixed(0)},${s.position.z.toFixed(0)})`;
+        `pos: (${s.position.x.toFixed(0)},${s.position.y.toFixed(0)},${s.position.z.toFixed(0)})` +
+        terrainText;
     }, 200);
     return () => clearInterval(interval);
-  }, [getState]);
+  }, [getState, getTerrainMetrics]);
 
   return (
     <div

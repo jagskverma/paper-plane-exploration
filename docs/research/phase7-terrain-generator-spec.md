@@ -52,8 +52,8 @@ for gridY in 0..resolution-1:
     b = a + 1
     c = a + stride
     d = c + 1
-    indices.push(a, b, d)  // triangle 1
-    indices.push(a, d, c)  // triangle 2
+    indices.push(a, c, d)  // triangle 1
+    indices.push(a, d, b)  // triangle 2
 ```
 
 Where `stride = resolution + 1`.

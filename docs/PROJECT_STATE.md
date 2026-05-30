@@ -93,7 +93,23 @@ Available local asset library is documented in `docs/references/ASSET_LIBRARY.md
 - [x] Drafted terrain architecture research notes
 - [x] Proposed per-face quadtree chunk architecture
 - [x] Defined Phase 7 implementation sequence
-- [ ] Human review of ADR-002
-- [ ] Phase 7 task selection
+- [x] ADR-002 reviewed and accepted
+- [x] Phase 7 task sequence drafted
 
-## Phase 7+ (future)
+## Phase 7 — Terrain Streaming MVP (started, not wired into runtime)
+
+- [x] Pure terrain chunk utilities added under `apps/web/src/terrain/`
+- [x] Standalone fixed-resolution chunk geometry generator added
+- [x] Fixed-level terrain render root added, not wired into runtime
+- [x] Viewer-position chunk selection wired into `TerrainRoot`
+- [x] Chunk geometry cache and disposal wired into `TerrainRoot`
+- [x] Chunked terrain replacement enabled with `USE_CHUNKED_TERRAIN = true`
+- [x] Terrain debug metrics path added for chunked terrain flag
+- [x] Visible terrain replacement test completed; chunk index winding fixed
+- [x] Initial dynamic selection verified: 120 visible chunks, 120 cached, 34,680 approximate vertices
+- [x] Deterministic procedural scenery scatter added for nearby chunked terrain
+- [x] Procedural scenery collision volumes merged into flight controller
+- [x] Legacy Phase 5.5 scale-test props disabled while chunked terrain is active
+- [ ] Replace placeholder scenery choices with curated asset manifest
+
+## Phase 8+ (future)

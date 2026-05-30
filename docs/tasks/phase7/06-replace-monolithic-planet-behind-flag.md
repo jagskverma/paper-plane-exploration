@@ -30,11 +30,11 @@ Terrain streaming is risky. If chunked terrain breaks the playable prototype, we
 
 # Acceptance Criteria
 
-- [x] `pnpm lint` and `pnpm build` pass.
-- [x] With flag `false`: game renders identical to current Phase 5.5.
-- [x] With flag `true`: `TerrainRoot` renders instead of `CubeSpherePlanet`.
-- [x] Flipping the flag and rebuilding takes no other changes.
-- [x] Rollback is one constant change.
+- [ ] `pnpm lint` and `pnpm build` pass.
+- [ ] With flag `false`: game renders identical to current Phase 5.5.
+- [ ] With flag `true`: `TerrainRoot` renders instead of `CubeSpherePlanet`.
+- [ ] Flipping the flag and rebuilding takes no other changes.
+- [ ] Rollback is one constant change.
 
 # Non-Goals
 

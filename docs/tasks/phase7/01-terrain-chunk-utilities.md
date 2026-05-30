@@ -28,11 +28,11 @@ Task 01 of the Phase 7 prep handoff already created `apps/web/src/terrain/ChunkI
 
 # Acceptance Criteria
 
-- [x] `pnpm lint` passes
-- [x] `pnpm build` passes
-- [x] `grep -r "from.*terrain" apps/web/src/core apps/web/src/flight apps/web/src/world apps/web/src/rendering` returns empty (no cross-subsystem imports into terrain)
-- [x] `ChunkId.ts` exports: `chunkKey`, `parseChunkKey`, `chunksPerAxis`, `validateChunkId`, `chunkUvBounds`, `parentChunk`, `childChunks`, `sameChunk`
-- [x] `CubeSphereMapping.ts` exports: `faceUvToCubePoint`, `faceUvToDirection`, `directionToFaceUv`, `chunkGridPointToDirection`
+- [ ] `pnpm lint` passes
+- [ ] `pnpm build` passes
+- [ ] `grep -r "from.*terrain" apps/web/src/core apps/web/src/flight apps/web/src/world apps/web/src/rendering` returns empty (no cross-subsystem imports into terrain)
+- [ ] `ChunkId.ts` exports: `chunkKey`, `parseChunkKey`, `chunksPerAxis`, `validateChunkId`, `chunkUvBounds`, `parentChunk`, `childChunks`, `sameChunk`
+- [ ] `CubeSphereMapping.ts` exports: `faceUvToCubePoint`, `faceUvToDirection`, `directionToFaceUv`, `chunkGridPointToDirection`
 
 # Non-Goals
 

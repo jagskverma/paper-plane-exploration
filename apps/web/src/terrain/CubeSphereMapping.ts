@@ -4,7 +4,7 @@
  * Converts between face-local UV coordinates [0,1] and sphere directions.
  * All functions are pure, deterministic, and side-effect free.
  *
- * Face convention:
+ * Face convention matches the current rendered cube sphere:
  *  0: +X   1: -X   2: +Y   3: -Y   4: +Z   5: -Z
  *
  * UV coordinates are normalized [0,1] on each face.
@@ -31,12 +31,12 @@ export function faceUvToCubePoint(face: CubeFace, u: number, v: number): THREE.V
   const b = v * 2 - 1; // [-1, 1]
 
   switch (face) {
-    case 0: return new THREE.Vector3(1, b, a);   // +X
-    case 1: return new THREE.Vector3(-1, b, -a); // -X (flip u to preserve orientation)
-    case 2: return new THREE.Vector3(a, 1, b);   // +Y
-    case 3: return new THREE.Vector3(a, -1, -b); // -Y (flip v)
-    case 4: return new THREE.Vector3(a, b, 1);   // +Z
-    case 5: return new THREE.Vector3(-a, b, -1); // -Z (flip u)
+    case 0: return new THREE.Vector3(1, b, a);  // +X
+    case 1: return new THREE.Vector3(-1, b, a); // -X
+    case 2: return new THREE.Vector3(a, 1, b);  // +Y
+    case 3: return new THREE.Vector3(a, -1, b); // -Y
+    case 4: return new THREE.Vector3(a, b, 1);  // +Z
+    case 5: return new THREE.Vector3(a, b, -1); // -Z
     default: throw new Error(`Invalid face: ${face}`);
   }
 }
@@ -60,15 +60,15 @@ export function directionToFaceUv(direction: THREE.Vector3): FaceUv {
 
   if (ax >= ay && ax >= az) {
     face = direction.x >= 0 ? 0 : 1;
-    a = (face === 0) ? direction.z / ax : -direction.z / ax;
+    a = direction.z / ax;
     b = direction.y / ax;
   } else if (ay >= ax && ay >= az) {
     face = direction.y >= 0 ? 2 : 3;
     a = direction.x / ay;
-    b = (face === 2) ? direction.z / ay : -direction.z / ay;
+    b = direction.z / ay;
   } else {
     face = direction.z >= 0 ? 4 : 5;
-    a = (face === 4) ? direction.x / az : -direction.x / az;
+    a = direction.x / az;
     b = direction.y / az;
   }
 

@@ -33,11 +33,11 @@ Without caching, every render frame would regenerate all terrain geometry. A key
 
 # Acceptance Criteria
 
-- [x] `pnpm lint` and `pnpm build` pass.
-- [x] Cache stores and retrieves geometries by chunkKey.
-- [x] When cache exceeds 256 entries, oldest is evicted and disposed.
-- [x] `clear()` disposes all geometries.
-- [x] No imports from `flight/`, `rendering/`, `world/`.
+- [ ] `pnpm lint` and `pnpm build` pass.
+- [ ] Cache stores and retrieves geometries by chunkKey.
+- [ ] When cache exceeds 256 entries, oldest is evicted and disposed.
+- [ ] `clear()` disposes all geometries.
+- [ ] No imports from `flight/`, `rendering/`, `world/`.
 
 # Non-Goals
 

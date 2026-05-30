@@ -33,10 +33,10 @@ Terrain streaming can silently degrade — chunks disappear, vertex counts spike
 
 # Acceptance Criteria
 
-- [x] `pnpm lint` and `pnpm build` pass.
-- [x] When chunked terrain is active, metrics are visible (HUD or console).
-- [x] Chunk count changes when viewer moves (if chunk selection is active).
-- [x] No terrain internals leaked to `ui/`.
+- [ ] `pnpm lint` and `pnpm build` pass.
+- [ ] When chunked terrain is active, metrics are visible (HUD or console).
+- [ ] Chunk count changes when viewer moves (if chunk selection is active).
+- [ ] No terrain internals leaked to `ui/`.
 
 # Non-Goals
 

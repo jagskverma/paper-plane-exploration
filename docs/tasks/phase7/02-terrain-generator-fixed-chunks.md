@@ -32,13 +32,13 @@ Terrain geometry generation is the core of Phase 7 streaming. A stable determini
 
 # Acceptance Criteria
 
-- [x] `pnpm lint` and `pnpm build` pass from `apps/web`.
-- [x] `generateChunkGeometry({face: 2, level: 0, x: 0, y: 0})` returns a valid `BufferGeometry`.
-- [x] Geometry has `position`, `color`, index, and computed normals.
-- [x] 16×16 cells = 289 vertices, 512 triangles.
-- [x] Height uses `evaluateTerrainHeight(direction)` with normalized sphere direction.
-- [x] Colors match `CubeSpherePlanet` color bands.
-- [x] Same resolution, same height function, same color logic as the current planet.
+- [ ] `pnpm lint` and `pnpm build` pass from `apps/web`.
+- [ ] `generateChunkGeometry({face: 2, level: 0, x: 0, y: 0})` returns a valid `BufferGeometry`.
+- [ ] Geometry has `position`, `color`, index, and computed normals.
+- [ ] 16×16 cells = 289 vertices, 512 triangles.
+- [ ] Height uses `evaluateTerrainHeight(direction)` with normalized sphere direction.
+- [ ] Colors match `CubeSpherePlanet` color bands.
+- [ ] Same resolution, same height function, same color logic as the current planet.
 
 # Non-Goals
 
