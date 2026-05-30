@@ -57,6 +57,7 @@ The project prioritizes emotional experience first. If a feature does not improv
 | 5.5 | Paper Plane Scale & Ground-Proximity Feel | in progress | ⚠️ Feel-Critical |
 | 6 | Terrain Architecture Research | drafted | Medium |
 | 7 | Terrain Streaming MVP | pending | 🔴 Extremely Hard |
+| 7.5 | Scenery Streaming MVP | pending | 🔴 Critical |
 | 8 | Terrain Stability & Optimization | pending | 🔴 Extremely Hard |
 | 9 | Biome Generation System | pending | Medium |
 | 10 | Ocean & Water Systems | pending | Medium |
@@ -120,6 +121,7 @@ Content expansion and architectural cleanup after real-world scaling.
 | 3 — Atmosphere | 🎨 High | Artistic, not technical. Hard to tune. Easy to make "generic sky." |
 | 5.5 — Paper Plane Scale | ⚠️ High | This determines whether the game feels like a paper plane or a small aircraft. Requires tight iteration on altitude, speed, camera, and nearby object scale. |
 | 7 — Terrain Streaming MVP | 🔴 Critical | Cube-sphere chunk streaming with LOD in a browser. Most likely phase to fail. |
+| 7.5 — Scenery Streaming MVP | 🔴 Critical | Asset counts can explode quickly. Scenery must stream by chunk before content expands. |
 | 8 — Terrain Stability | 🔴 Critical | Seams, cracks, popping, memory pressure, GC spikes. Death by a thousand edge cases. Most procedural projects fail here. |
 | 16 — Performance | 🔴 Critical | Browser profiling is unforgiving. Easy to optimize the wrong thing. Must be data-driven. |
 
@@ -290,6 +292,37 @@ This phase is research-first. Do NOT skip it.
 **Success Criteria:** Stable traversable procedural terrain, scalable streaming behavior, acceptable performance.
 
 **Avoid:** Biome complexity, visual polish, excessive procedural layers.
+
+---
+
+### Phase 7.5 — Scenery Streaming MVP 🔴
+
+**Goal:** Stream environmental object instances around the player without loading or storing planet-wide scenery.
+
+**Why this phase exists:** Phase 7 can render chunked terrain, and Phase 5.5 proves that close objects matter for paper-plane scale. Adding more assets before a scenery streaming lifecycle would make the browser load too many objects and would hide memory/performance problems until they are harder to isolate.
+
+**Focus:**
+- Deterministic scenery placement per terrain chunk from chunk id and seed.
+- Forward-biased active scenery window around the paper plane, with horizon buffer.
+- Strict budgets for active scenery chunks, rendered objects, and collidable objects.
+- Reuse loaded GLB asset types; mount/unmount object instances by chunk.
+- Keep collisions only for nearby objects.
+- Debug metrics for active scenery chunks, visible scenery objects, collidable objects, and active asset types.
+
+**Success Criteria:**
+- Flying forward replaces scenery chunks behind the player with chunks ahead of the player.
+- Object count remains bounded by explicit budgets.
+- Collision candidates remain much lower than visible object count.
+- Adding more curated asset types does not require changing the streaming lifecycle.
+- The prototype remains runnable and visually denser than the Phase 5.5 object strip.
+
+**Avoid:**
+- Biome rules.
+- Rare landmarks.
+- Settlements.
+- Mesh-accurate collision.
+- Async worker generation.
+- Complex asset eviction before measured pressure requires it.
 
 ---
 

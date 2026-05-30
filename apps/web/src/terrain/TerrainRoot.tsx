@@ -26,11 +26,11 @@ interface TerrainSelection {
   metrics: TerrainDebugMetrics;
 }
 
-export function TerrainRoot({ viewerPosition, onMetrics }: TerrainRootProps) {
+export function TerrainRoot({ viewerPosition: _viewerPosition, onMetrics }: TerrainRootProps) {
   const cache = useMemo(() => new TerrainCache(), []);
 
   const selection = useMemo<TerrainSelection>(() => {
-    const ids = selectChunks(viewerPosition);
+    const ids = selectChunks();
     const result = ids.reduce<{
       chunks: RenderChunk[];
       generatedChunks: number;
@@ -58,7 +58,7 @@ export function TerrainRoot({ viewerPosition, onMetrics }: TerrainRootProps) {
         approximateVertices: result.chunks.length * VERTICES_PER_CHUNK,
       },
     };
-  }, [cache, viewerPosition]);
+  }, [cache]);
 
   useEffect(() => {
     onMetrics?.(selection.metrics);

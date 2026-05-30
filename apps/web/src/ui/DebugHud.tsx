@@ -38,8 +38,17 @@ export function DebugHud({ getState, getTerrainMetrics }: DebugHudProps) {
           `${terrain.generatedChunks} generated, ` +
           `${terrain.cacheEntries} cached, ` +
           `${terrain.approximateVertices} verts` +
+          (terrain.activeSceneryChunks !== undefined
+            ? ` | scenery chunks: ${terrain.activeSceneryChunks}`
+            : "") +
           (terrain.sceneryObjects !== undefined
             ? ` | scenery: ${terrain.sceneryObjects}`
+            : "") +
+          (terrain.collidableSceneryObjects !== undefined
+            ? ` | scenery collision: ${terrain.collidableSceneryObjects}`
+            : "") +
+          (terrain.activeSceneryAssetTypes !== undefined
+            ? ` | asset types: ${terrain.activeSceneryAssetTypes}`
             : "")
         : "";
 

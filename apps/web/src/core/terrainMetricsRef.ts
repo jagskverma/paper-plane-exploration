@@ -3,7 +3,10 @@ export interface TerrainDebugMetrics {
   generatedChunks: number;
   cacheEntries: number;
   approximateVertices: number;
+  activeSceneryChunks?: number;
   sceneryObjects?: number;
+  collidableSceneryObjects?: number;
+  activeSceneryAssetTypes?: number;
 }
 
 export const terrainMetricsRef: { current: TerrainDebugMetrics | null } = {

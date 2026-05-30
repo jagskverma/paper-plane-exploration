@@ -1,6 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { FlightScene } from "./FlightScene";
 import { DebugHud } from "../ui/DebugHud";
+import { ModeBanner } from "../ui/ModeBanner";
 import { flightControllerRef } from "./flightRef";
 import { terrainMetricsRef } from "./terrainMetricsRef";
 
@@ -17,6 +18,7 @@ export function App() {
         getState={() => flightControllerRef.current?.getState() ?? null}
         getTerrainMetrics={() => terrainMetricsRef.current}
       />
+      <ModeBanner />
     </div>
   );
 }

@@ -80,3 +80,17 @@ Proceed to wiring viewer-position chunk selection and `TerrainCache` into `Terra
 - cache disposal is verified,
 - asset placement uses a shared terrain surface query compatible with chunked terrain,
 - and no visible face seams appear during normal flight.
+
+## Update — 2026-05-30
+
+Mixed level-2/3/4 selection produced visible thin blue slits at chunk boundaries. The likely cause is LOD T-junctions where high-resolution child edges meet lower-resolution parent edges.
+
+Phase 7 now uses a single level-4 visible terrain pass as the baseline. This removes mixed-LOD boundaries while keeping the chunked renderer active.
+
+Observed runtime metrics after the change:
+
+- Visible chunks: 1536
+- Cache entries: 1536
+- Approximate vertices: 443,904
+
+This is temporary. Mixed LOD should only return after edge stitching or terrain skirts are implemented and verified.

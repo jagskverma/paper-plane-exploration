@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asset Browser — Paper Plane Exploration</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #eee; display: flex; height: 100vh; overflow: hidden; }
+#sidebar { width: 380px; min-width: 300px; background: #16213e; display: flex; flex-direction: column; border-right: 1px solid #0f3460; }
+#search { padding: 10px; }
+#search input { width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #0f3460; background: #0a1628; color: #eee; font-size: 14px; }
+#filters { padding: 0 10px 8px; display: flex; flex-wrap: wrap; gap: 4px; }
+#filters button { padding: 3px 10px; border-radius: 12px; border: 1px solid #0f3460; background: #0a1628; color: #aaa; cursor: pointer; font-size: 11px; }
+#filters button.active { background: #0f3460; color: #fff; border-color: #1a5276; }
+#stats { padding: 0 10px 6px; font-size: 11px; color: #666; }
+#list { flex: 1; overflow-y: auto; padding: 0 8px; }
+.item { padding: 6px 8px; margin: 2px 0; border-radius: 4px; cursor: pointer; font-size: 12px; border: 1px solid transparent; }
+.item:hover { background: #1a2744; }
+.item.selected { background: #0f3460; border-color: #1a5276; }
+.item .name { font-weight: 600; color: #ccc; }
+.item .meta { font-size: 10px; color: #777; margin-top: 1px; }
+.item .dim { color: #5a8; }
+#viewer { flex: 1; position: relative; }
+#info { position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); padding: 8px 12px; border-radius: 6px; font-size: 12px; pointer-events: none; }
+#info .label { color: #888; }
+#info .val { color: #fff; }
+#loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #888; font-size: 14px; display: none; }
+</style>
+</head>
+<body>
+<div id="sidebar">
+  <div id="search"><input type="text" placeholder="Search assets..." id="searchInput"></div>
+  <div id="filters">
+    <button data-cat="all" class="active">All</button>
+    <button data-cat="tree">Trees</button>
+    <button data-cat="bush">Bushes</button>
+    <button data-cat="rock">Rocks</button>
+    <button data-cat="structure">Structures</button>
+    <button data-cat="landmark">Landmarks</button>
+    <button data-cat="prop">Props</button>
+    <button data-cat="vehicle">Vehicles</button>
+    <button data-cat="scene">Scenes</button>
+    <button data-cat="unknown">Other</button>
+  </div>
+  <div id="stats"></div>
+  <div id="list"></div>
+</div>
+<div id="viewer">
+  <div id="loading">Loading model...</div>
+  <div id="info">
+    <div><span class="label">Name: </span><span class="val" id="infoName">—</span></div>
+    <div><span class="label">Size: </span><span class="val" id="infoSize">—</span></div>
+    <div><span class="label">Scale: </span><span class="val" id="infoScale">—</span></div>
+    <div><span class="label">Verts: </span><span class="val" id="infoVerts">—</span></div>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+// Load database
+const resp = await fetch('/glb-database.json');
+const db = await resp.json();
+
+// State
+let selectedCategory = 'all';
+let searchQuery = '';
+let currentModel = null;
+
+// Three.js setup
+const viewer = document.getElementById('viewer');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#1a1a2e');
+scene.fog = new THREE.Fog('#1a1a2e', 5, 30);
+
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 500);
+camera.position.set(3, 2, 5);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+viewer.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 1.5;
+controls.target.set(0, 0, 0);
+
+// Lights
+scene.add(new THREE.AmbientLight('#ffffff', 1.5));
+const key = new THREE.DirectionalLight('#ffffff', 3);
+key.position.set(5, 8, 5);
+scene.add(key);
+const fill = new THREE.DirectionalLight('#8899cc', 1);
+fill.position.set(-3, 2, -2);
+scene.add(fill);
+
+// Grid
+const grid = new THREE.GridHelper(10, 20, '#334466', '#223355');
+scene.add(grid);
+
+// Group for loaded model
+const modelGroup = new THREE.Group();
+scene.add(modelGroup);
+
+const loader = new GLTFLoader();
+
+function loadModel(entry) {
+  document.getElementById('loading').style.display = 'block';
+  // Clear previous
+  while(modelGroup.children.length) modelGroup.remove(modelGroup.children[0]);
+  
+  const path = entry.path;
+  const fullPath = path.startsWith('apps/') ? '/' + path.replace('apps/web/public/', '') : '/assets-proxy/' + path;
+  
+  loader.load(fullPath, (gltf) => {
+    const model = gltf.scene;
+    // Center model
+    const box = new THREE.Box3().setFromObject(model);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scale = 3 / (maxDim || 1); // normalize to ~3 units
+    model.position.sub(center).multiplyScalar(scale);
+    model.scale.setScalar(scale);
+    modelGroup.add(model);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('infoName').textContent = entry.filename;
+    document.getElementById('infoSize').textContent = `${entry.width}m × ${entry.height}m × ${entry.depth}m`;
+    document.getElementById('infoScale').textContent = `${entry.suggestedScale}x (to 3m)`;
+    document.getElementById('infoVerts').textContent = entry.vertexCount.toLocaleString();
+    currentModel = entry;
+  }, undefined, () => {
+    document.getElementById('loading').textContent = 'Failed to load model';
+  });
+}
+
+// Render loop
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  const w = viewer.clientWidth;
+  const h = viewer.clientHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / Math.max(h, 1);
+  camera.updateProjectionMatrix();
+  renderer.render(scene, camera);
+}
+animate();
+
+// Resize
+window.addEventListener('resize', () => {});
+
+// Filtering
+function filterAssets() {
+  let filtered = db;
+  if (selectedCategory !== 'all') {
+    filtered = filtered.filter(e => e.category === selectedCategory);
+  }
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(e => 
+      e.filename.toLowerCase().includes(q) || 
+      e.tags.some(t => t.includes(q)) ||
+      e.source.includes(q)
+    );
+  }
+  return filtered;
+}
+
+function renderList() {
+  const filtered = filterAssets();
+  document.getElementById('stats').textContent = `${filtered.length} of ${db.length} assets`;
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  for (const e of filtered.slice(0, 500)) {
+    const div = document.createElement('div');
+    div.className = 'item' + (currentModel === e ? ' selected' : '');
+    div.innerHTML = `
+      <div class="name">${e.filename.replace('.glb','')}</div>
+      <div class="meta">
+        <span class="dim">${e.width}m×${e.height}m×${e.depth}m</span> · 
+        ${e.category} · ${e.fileSizeKB}KB · ${e.source}
+      </div>`;
+    div.onclick = () => {
+      document.querySelectorAll('.item.selected').forEach(el => el.classList.remove('selected'));
+      div.classList.add('selected');
+      loadModel(e);
+    };
+    list.appendChild(div);
+  }
+}
+
+// Events
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchQuery = e.target.value;
+  renderList();
+});
+
+document.querySelectorAll('#filters button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#filters button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedCategory = btn.dataset.cat;
+    renderList();
+  });
+});
+
+// Initial render
+renderList();
+
+// Load first tree by default
+const firstTree = db.find(e => e.category === 'tree' && e.height > 1 && e.height < 5);
+if (firstTree) loadModel(firstTree);
+</script>
+</body>
+</html>

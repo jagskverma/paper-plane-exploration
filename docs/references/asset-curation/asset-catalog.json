@@ -1,0 +1,139 @@
+{
+  "version": 1,
+  "generated": "2026-05-30",
+  "scope": "Curated assets referenced by scenery-curation-manifest.json",
+  "assets": [
+    {
+      "assetId": "pine-trees",
+      "category": "tree",
+      "sourcePath": "assets/polypizza/nature/Pine_Trees_oYtDty0fR6.glb",
+      "runtimePath": "apps/web/public/scenery-assets/pine-trees.glb"
+    },
+    {
+      "assetId": "pine-trees-w8zaiyjk8c",
+      "category": "tree",
+      "sourcePath": "assets/polypizza/nature/Pine_Trees_w8ZaiYjK8C.glb",
+      "runtimePath": "apps/web/public/scenery-assets/pine-trees-alt.glb"
+    },
+    {
+      "assetId": "birch-trees",
+      "category": "tree",
+      "sourcePath": "assets/polypizza/nature/Birch_Trees_R7qMWzb7nk.glb",
+      "runtimePath": "apps/web/public/scenery-assets/birch-trees.glb"
+    },
+    {
+      "assetId": "maple-trees",
+      "category": "tree",
+      "sourcePath": "assets/polypizza/nature/Maple_Trees_iGFtQd0PJO.glb",
+      "runtimePath": "apps/web/public/scenery-assets/maple-trees.glb"
+    },
+    {
+      "assetId": "dead-trees",
+      "category": "tree",
+      "sourcePath": "assets/polypizza/nature/Dead_Trees_26H2UlEtWA.glb",
+      "runtimePath": null
+    },
+    {
+      "assetId": "bushes",
+      "category": "bush",
+      "sourcePath": "assets/polypizza/nature/Bushes_J2h3HrO356.glb",
+      "runtimePath": "apps/web/public/scenery-assets/bushes.glb"
+    },
+    {
+      "assetId": "flower-bushes",
+      "category": "bush",
+      "sourcePath": "assets/polypizza/nature/Flower_Bushes_1X06RgvSr6.glb",
+      "runtimePath": "apps/web/public/scenery-assets/flower-bushes.glb"
+    },
+    {
+      "assetId": "grass",
+      "category": "grass",
+      "sourcePath": "assets/polypizza/nature/Grass_UGTOzcO3P2.glb",
+      "runtimePath": "apps/web/public/scenery-assets/grass.glb"
+    },
+    {
+      "assetId": "rock-large",
+      "category": "rock",
+      "sourcePath": "assets/polypizza/nature/Rock_Large_li0YBlBEMz.glb",
+      "runtimePath": "apps/web/public/scenery-assets/rock-large.glb"
+    },
+    {
+      "assetId": "rock",
+      "category": "rock",
+      "sourcePath": "assets/polypizza/nature/Rock_RtLRqYjfMs.glb",
+      "runtimePath": "apps/web/public/scenery-assets/rock.glb"
+    },
+    {
+      "assetId": "rock-34w5ymeepk",
+      "category": "rock",
+      "sourcePath": "assets/polypizza/nature/Rock_34W5ymEePk.glb",
+      "runtimePath": null
+    },
+    {
+      "assetId": "castle-1234",
+      "category": "landmark",
+      "sourcePath": "assets/polypizza/buildings/castle_1234_dmP1nRE_2GM.glb",
+      "runtimePath": null
+    },
+    {
+      "assetId": "lighthouse",
+      "category": "landmark",
+      "sourcePath": "assets/polypizza/buildings/Lighthouse_c1-hm3Zs-8U.glb",
+      "runtimePath": null
+    },
+    {
+      "assetId": "gazebo",
+      "category": "landmark",
+      "sourcePath": "assets/polypizza/buildings/Gazebo_8avgVfZaE42.glb",
+      "runtimePath": null
+    },
+    {
+      "assetId": "wind-turbine",
+      "category": "landmark",
+      "sourcePath": "assets/polypizza/buildings/Wind_Turbine_n9lfMIPumB.glb",
+      "runtimePath": null
+    },
+    {
+      "assetId": "watch-tower",
+      "category": "landmark",
+      "sourcePath": "assets/polypizza/buildings/Watch_Tower_f2J0aSLVi4.glb",
+      "runtimePath": null
+    },
+    {
+      "assetId": "fantasy-ruins",
+      "category": "landmark",
+      "sourcePath": "assets/polypizza/buildings/Arch_UNjhI7hudt.glb",
+      "runtimePath": null
+    },
+    {
+      "assetId": "farm-house",
+      "category": "structure",
+      "sourcePath": "assets/polypizza/buildings/Farm_house_bHyQe5jzdiQ.glb",
+      "runtimePath": null
+    },
+    {
+      "assetId": "house",
+      "category": "structure",
+      "sourcePath": "assets/polypizza/buildings/House_roqiHdrpgc.glb",
+      "runtimePath": null
+    },
+    {
+      "assetId": "huts",
+      "category": "structure",
+      "sourcePath": "assets/polypizza/buildings/Huts_j9uMWazOBh.glb",
+      "runtimePath": null
+    },
+    {
+      "assetId": "storage-shed",
+      "category": "structure",
+      "sourcePath": "assets/polypizza/buildings/Storage_shed_TvXpjtD2nk.glb",
+      "runtimePath": null
+    },
+    {
+      "assetId": "barn",
+      "category": "structure",
+      "sourcePath": "assets/polypizza/buildings/Barn_0QTh_KUZRYE.glb",
+      "runtimePath": null
+    }
+  ]
+}

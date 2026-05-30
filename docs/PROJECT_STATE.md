@@ -1,16 +1,21 @@
 # Project State
 
-> Last updated: 2026-05-29
+> Last updated: 2026-05-30
 
 ## Current Phase
 
-**Phase 5.5 — Paper Plane Scale & Ground-Proximity Feel** ← current
+**Phase 7.5 — Scenery Streaming MVP** ← current
 
 ## Repo
 
 - **Local:** `~/projects/paper-plane-exploration`
 - **Remote:** https://github.com/jagskverma/paper-plane-exploration
 - Issues: enabled | Projects: enabled | Wiki: disabled | Visibility: public
+
+## Working Agreement
+
+- During feel-tuning and streaming work, obvious fixes should be implemented immediately instead of waiting for another explicit prompt.
+- Document notable tuning decisions after implementation so the project state stays accurate.
 
 ---
 
@@ -110,6 +115,38 @@ Available local asset library is documented in `docs/references/ASSET_LIBRARY.md
 - [x] Deterministic procedural scenery scatter added for nearby chunked terrain
 - [x] Procedural scenery collision volumes merged into flight controller
 - [x] Legacy Phase 5.5 scale-test props disabled while chunked terrain is active
-- [ ] Replace placeholder scenery choices with curated asset manifest
+- [x] First curated woodland asset slice copied to `apps/web/public/scenery-assets/`
+- [x] Procedural scenery now uses a typed starter woodland catalog instead of scale-test assets
+- [x] Replace placeholder scenery choices with curated starter woodland assets
+- [x] Increased local procedural scenery density from 40 to 120 objects
+- [x] Neutral flight no longer gains altitude from tangent integration on the curved planet
+- [x] Phase 7 terrain temporarily switched to single-level chunks to remove mixed-LOD blue slits
+- [ ] Replace single-level terrain with stitched LOD once edge stitching is implemented
+
+## Phase 7.5 — Scenery Streaming MVP ← current
+
+- [x] Roadmap updated to add Phase 7.5 before biome/content expansion
+- [x] Scenery streaming task added under `docs/tasks/phase7_5/`
+- [x] Pure deterministic scenery placement generator added
+- [x] Runtime scenery streamer added with active chunk and visible object budgets
+- [x] Scenery selection biased around/ahead of the paper plane
+- [x] Scenery chunk groups mount/unmount from the active streaming window
+- [x] Collision candidates limited to nearby scenery placements
+- [x] HUD reports active scenery chunks, visible scenery objects, collision candidates, and active asset types
+- [x] Runtime verified at 34 active scenery chunks, 160 visible scenery objects, 4 collision candidates, 9 active asset types
+- [x] Increased tree scale and tree weighting after playtest showed undersized pine trees
+- [x] Expanded scenery retention window to reduce visible pop-out while turning
+- [x] Runtime verified at 48 active scenery chunks, 220 visible scenery objects, 7 collision candidates, 9 active asset types
+- [x] Added a nearby turn-buffer chunk ring so side/back scenery persists better during turns
+- [x] Runtime verified at 38 active scenery chunks, 190 visible scenery objects, 3 collision candidates, 9 active asset types
+- [x] Added asset scale review mode at `/?scaleReview=1` with fixed camera and numbered starter woodland lineup
+- [x] Applied first visual scale review feedback to starter woodland catalog
+- [x] Added a visible `Scale Review Mode` banner for review URLs
+- [x] Added test-only Space speed boost gated by `ENABLE_TEST_SPEED_BOOST`
+- [x] Added explicit runtime scenery asset library plus `ACTIVE_SCENERY_ASSET_IDS` swap list
+- [x] Switched active scenery to converted SimpleNature assets
+- [x] Increased streamer density budget; runtime verified at 384 visible scenery objects and 13 active asset types
+- [ ] Playtest density and popping while turning at low altitude
+- [ ] Add rare landmark and sparse settlement placement rules after woodland streaming feels right
 
 ## Phase 8+ (future)

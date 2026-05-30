@@ -9,11 +9,13 @@ export interface FlightInput {
   pitch: number;
   /** -1 (dive/brake) to 1 (boost). Controls speed modifier. */
   throttle: number;
+  /** Test-only speed boost. Gated by world config before input sets it. */
+  speedBoost: boolean;
 }
 
 /**
  * Creates default neutral input (no movement).
  */
 export function neutralInput(): FlightInput {
-  return { bank: 0, pitch: 0, throttle: 0 };
+  return { bank: 0, pitch: 0, throttle: 0, speedBoost: false };
 }

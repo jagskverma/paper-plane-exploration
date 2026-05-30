@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import type { FlightInput } from "../input/FlightInput";
 import {
+  ENABLE_TEST_SPEED_BOOST,
   INITIAL_FLIGHT_ALTITUDE,
   MIN_FLIGHT_ALTITUDE,
   PLANET_RADIUS,
@@ -18,6 +19,7 @@ export interface FlightState {
 const BASE_SPEED = 9.0;
 const MIN_SPEED = 4.0;
 const MAX_SPEED = 12.0;
+const TEST_BOOST_SPEED = 18.0;
 const SPEED_RESPONSE = 1.8;
 const GLIDE_SINK_RATE = 0;
 const MAX_PITCH_ANGLE = THREE.MathUtils.degToRad(22);
@@ -114,6 +116,7 @@ export class FlightController {
     const toCenter = normal.clone().multiplyScalar(-1);
     const surfaceRadius = PLANET_RADIUS + this.getTerrainHeight(normal);
     this.state.altitude = this.state.position.length() - surfaceRadius;
+    const altitudeBeforeMovement = this.state.altitude;
 
     // --- Player controls ---
     const targetBank = input.bank * MAX_BANK_ANGLE;
@@ -136,10 +139,13 @@ export class FlightController {
     );
 
     const cruiseSpeed = this.collisionCooldown > 0 ? MIN_SPEED : BASE_SPEED;
+    const maxSpeed = ENABLE_TEST_SPEED_BOOST ? TEST_BOOST_SPEED : MAX_SPEED;
     const targetSpeed = THREE.MathUtils.clamp(
-      cruiseSpeed - pitchInput * 2.5,
+      input.speedBoost && ENABLE_TEST_SPEED_BOOST
+        ? TEST_BOOST_SPEED
+        : cruiseSpeed - pitchInput * 2.5,
       MIN_SPEED,
-      MAX_SPEED,
+      maxSpeed,
     );
     const speedT = 1 - Math.exp(-SPEED_RESPONSE * dt);
     this.state.speed = THREE.MathUtils.lerp(this.state.speed, targetSpeed, speedT);
@@ -161,24 +167,24 @@ export class FlightController {
     const movementForward = heading.clone()
       .applyAxisAngle(right, this.state.pitchAngle)
       .normalize();
-    this.state.position.addScaledVector(movementForward, this.state.speed * dt);
+    const movementDistance = this.state.speed * dt;
+    const altitudeDelta = movementForward.dot(normal) * movementDistance;
+    this.state.position.addScaledVector(movementForward, movementDistance);
     if (GLIDE_SINK_RATE > 0) {
       this.state.position.addScaledVector(toCenter, GLIDE_SINK_RATE * dt);
     }
 
-    // Recalculate altitude after all position changes
+    // Reproject after tangent motion so flying straight does not gain altitude on
+    // the curved planet. Only pitch and explicit sink should change AGL.
     const newNormal = this.state.position.clone().normalize();
     const newSurfaceRadius = PLANET_RADIUS + this.getTerrainHeight(newNormal);
-    const newAlt = this.state.position.length() - newSurfaceRadius;
+    const intendedAltitude = altitudeBeforeMovement +
+      altitudeDelta -
+      (GLIDE_SINK_RATE > 0 ? GLIDE_SINK_RATE * dt : 0);
+    const newAlt = Math.max(MIN_FLIGHT_ALTITUDE, intendedAltitude);
 
-    if (newAlt < MIN_FLIGHT_ALTITUDE) {
-      this.state.position.copy(
-        newNormal.multiplyScalar(newSurfaceRadius + MIN_FLIGHT_ALTITUDE),
-      );
-      this.state.altitude = MIN_FLIGHT_ALTITUDE;
-    } else {
-      this.state.altitude = newAlt;
-    }
+    this.state.position.copy(newNormal.multiplyScalar(newSurfaceRadius + newAlt));
+    this.state.altitude = newAlt;
 
     this.resolveObstacleCollisions(heading);
 

@@ -2,7 +2,7 @@ import type * as THREE from "three";
 import type { ChunkId } from "./ChunkId";
 import { chunkKey } from "./ChunkId";
 
-const DEFAULT_MAX_ENTRIES = 256;
+const DEFAULT_MAX_ENTRIES = 2048;
 
 export class TerrainCache {
   private geometries = new Map<string, THREE.BufferGeometry>();
