@@ -33,11 +33,15 @@ const BANK_TURN_RATE = 0.84;
 export type TerrainHeightSampler = (surfaceNormal: THREE.Vector3) => number;
 
 export interface FlightCollisionObstacle {
-  kind: "sphere" | "capsule";
+  kind: "sphere" | "capsule" | "box";
   base: THREE.Vector3;
   up: THREE.Vector3;
   radius: number;
   height?: number;
+  /** Box half-extents (local space). Only used when kind === "box". */
+  extents?: THREE.Vector3;
+  /** Box world rotation. Only used when kind === "box". */
+  boxRotation?: THREE.Quaternion;
 }
 
 function buildSurfaceAlignedRotation(
@@ -231,6 +235,19 @@ export class FlightController {
   private closestObstaclePoint(obstacle: FlightCollisionObstacle) {
     if (obstacle.kind === "sphere") {
       return obstacle.base.clone();
+    }
+
+    if (obstacle.kind === "box" && obstacle.extents && obstacle.boxRotation) {
+      // Point-in-OBB: transform to local space, clamp, transform back
+      const local = this.state.position.clone()
+        .sub(obstacle.base)
+        .applyQuaternion(obstacle.boxRotation.clone().invert());
+      local.x = THREE.MathUtils.clamp(local.x, -obstacle.extents.x, obstacle.extents.x);
+      local.y = THREE.MathUtils.clamp(local.y, -obstacle.extents.y, obstacle.extents.y);
+      local.z = THREE.MathUtils.clamp(local.z, -obstacle.extents.z, obstacle.extents.z);
+      return obstacle.base.clone().add(
+        local.applyQuaternion(obstacle.boxRotation),
+      );
     }
 
     const baseToPlane = this.state.position.clone().sub(obstacle.base);

@@ -141,32 +141,33 @@ export function collisionForPlacement(placement: SceneryPlacement) {
   }
 
   const surfaceNormal = placement.direction.clone().normalize();
-  const height = placement.asset.collisionHeight * placement.scale;
+  const scaledRadius = placement.asset.collisionRadius * placement.scale;
+  const scaledHeight = placement.asset.collisionHeight * placement.scale;
+  const scaledExtents = new THREE.Vector3(scaledRadius, scaledHeight / 2, scaledRadius);
+  const boxCenter = placement.position.clone()
+    .addScaledVector(surfaceNormal, scaledHeight / 2);
 
   if (placement.asset.collisionHint === "trunk_canopy") {
     return [
       {
-        kind: "capsule",
-        base: placement.position.clone(),
+        kind: "box" as const,
+        base: boxCenter,
         up: surfaceNormal,
-        radius: 0.45,
-        height: height * 0.48,
-      },
-      {
-        kind: "sphere",
-        base: placement.position.clone().addScaledVector(surfaceNormal, height * 0.82),
-        up: surfaceNormal,
-        radius: placement.asset.collisionRadius * placement.scale,
+        radius: scaledRadius,
+        extents: scaledExtents,
+        boxRotation: placement.rotation.clone(),
       },
     ] satisfies FlightCollisionObstacle[];
   }
 
   return [
     {
-      kind: "sphere",
-      base: placement.position.clone().addScaledVector(surfaceNormal, height * 0.5),
+      kind: "box" as const,
+      base: boxCenter,
       up: surfaceNormal,
-      radius: placement.asset.collisionRadius * placement.scale,
+      radius: Math.max(scaledExtents.x, scaledExtents.y, scaledExtents.z),
+      extents: scaledExtents,
+      boxRotation: placement.rotation.clone(),
     },
   ] satisfies FlightCollisionObstacle[];
 }
