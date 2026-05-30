@@ -1,7 +1,7 @@
 # GLB Asset Database Summary
 
 > Generated: 2026-05-30
-> Database: `docs/assets/glb-database.json` — 4476 entries, 0 parse errors
+> Database: `docs/assets/glb-database.json` — 4460 entries, 0 parse errors
 
 ## Sources
 
@@ -10,35 +10,35 @@
 | converted-oga | 306 |
 | polypizza/buildings | 255 |
 | polypizza/nature | 286 |
-| polypizza/scenes | 191 |
+| polypizza/scenes | 190 |
 | public | 3002 |
-| split-trees | 436 |
+| split-trees | 421 |
 
-**Total:** 4476 files, 1388.2 MB
+**Total:** 4460 files, 1349.1 MB
 
 ## Scale Distribution (bounding sphere radius)
 
 | Range | Count | % |
 |-------|-------|---|
-| Tiny (< 0.5m) | 1974 | 44% |
+| Tiny (< 0.5m) | 1959 | 43% |
 | Small (0.5-2m) | 1754 | 39% |
 | Medium (2-10m) | 366 | 8% |
 | Large (10-50m) | 205 | 4% |
-| Huge (50m+) | 177 | 3% |
+| Huge (50m+) | 176 | 3% |
 
 ## Category Breakdown
 
 | Category | Count | % |
 |----------|-------|---|
-| unknown | 1648 | 36% |
+| unknown | 1646 | 36% |
 | structure | 726 | 16% |
-| tree | 642 | 14% |
+| tree | 627 | 14% |
 | rock | 494 | 11% |
 | bush | 460 | 10% |
 | prop | 257 | 5% |
 | vehicle | 205 | 4% |
 | landmark | 24 | 0% |
-| scene | 20 | 0% |
+| scene | 21 | 0% |
 
 ## Trees (top 15 by height)
 
@@ -57,8 +57,8 @@
 | 38.9m | 55.1m | Trees_dTy_L-TMS2z.glb | 0.08x |
 | 38.9m | 55.1m | Trees_dTy_L-TMS2z.glb | 0.08x |
 | 509.1m | 254.5m | Tree_6pwiq7hSrHr.glb | 0.01x |
+| 509.1m | 254.5m | apps_web_public_scale-test-assets_tree.glb | 0.01x |
 | 509.1m | 254.5m | Tree_6pwiq7hSrHr.glb | 0.01x |
-| 509.1m | 254.5m | tree.glb | 0.01x |
 
 ## Rocks (top 10 by height)
 
@@ -83,11 +83,11 @@ All objects are normalized to **3.0m target height**. The `suggestedScale` field
 
 | Feature | Files with |
 |---------|-----------|
-| Normals | 4417 |
+| Normals | 4401 |
 | Colors | 106 |
-| UVs | 3658 |
+| UVs | 3642 |
 | Multi-mesh | 493 |
-| Multi-material | 2236 |
+| Multi-material | 2220 |
 
 ## Query Examples
 
