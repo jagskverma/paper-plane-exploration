@@ -18,6 +18,7 @@ body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #eee; dis
 .item { padding: 6px 8px; margin: 2px 0; border-radius: 4px; cursor: pointer; font-size: 12px; border: 1px solid transparent; }
 .item:hover { background: #1a2744; }
 .item.selected { background: #0f3460; border-color: #1a5276; }
+.item.picked { background: #1a2a1a; }
 .item .name { font-weight: 600; color: #ccc; }
 .item .meta { font-size: 10px; color: #777; margin-top: 1px; }
 .item .dim { color: #5a8; }
@@ -42,8 +43,13 @@ body { font-family: system-ui, sans-serif; background: #1a1a2e; color: #eee; dis
     <button data-cat="vehicle">Vehicles</button>
     <button data-cat="scene">Scenes</button>
     <button data-cat="unknown">Other</button>
+    <button data-cat="selected" style="background:#1a3a1a;border-color:#2a5a2a">⭐ Selected</button>
   </div>
   <div id="stats"></div>
+  <div style="padding:4px 10px;display:flex;gap:4px">
+    <button id="exportBtn" style="padding:4px 10px;border-radius:4px;background:#1a3a1a;color:#8c8;border:1px solid #2a5a2a;cursor:pointer;font-size:11px">📋 Export Selected</button>
+    <button id="clearBtn" style="padding:4px 10px;border-radius:4px;background:#3a1a1a;color:#c88;border:1px solid #5a2a2a;cursor:pointer;font-size:11px">✕ Clear All</button>
+  </div>
   <div id="list"></div>
 </div>
 <div id="viewer">
@@ -72,6 +78,19 @@ const db = await resp.json();
 let selectedCategory = 'all';
 let searchQuery = '';
 let currentModel = null;
+
+// Selection state (persisted in localStorage)
+let selectedIds = new Set(JSON.parse(localStorage.getItem('assetBrowser_selected') || '[]'));
+
+function saveSelections() {
+  localStorage.setItem('assetBrowser_selected', JSON.stringify([...selectedIds]));
+}
+function toggleSelect(id) {
+  if (selectedIds.has(id)) selectedIds.delete(id);
+  else selectedIds.add(id);
+  saveSelections();
+  renderList();
+}
 
 // Three.js setup
 const viewer = document.getElementById('viewer');
@@ -103,9 +122,22 @@ const fill = new THREE.DirectionalLight('#8899cc', 1);
 fill.position.set(-3, 2, -2);
 scene.add(fill);
 
-// Grid
-const grid = new THREE.GridHelper(10, 20, '#334466', '#223355');
-scene.add(grid);
+// Base platform
+const platformGeo = new THREE.CircleGeometry(4, 32);
+const platformMat = new THREE.MeshStandardMaterial({ color: '#2a2a3e', roughness: 0.4, metalness: 0.1 });
+const platform = new THREE.Mesh(platformGeo, platformMat);
+platform.rotation.x = -Math.PI / 2;
+platform.position.y = -0.01;
+platform.receiveShadow = true;
+scene.add(platform);
+
+// Subtle ring
+const ringGeo = new THREE.TorusGeometry(4, 0.03, 16, 64);
+const ringMat = new THREE.MeshStandardMaterial({ color: '#3a3a5e', roughness: 0.3, metalness: 0.3 });
+const ring = new THREE.Mesh(ringGeo, ringMat);
+ring.rotation.x = -Math.PI / 2;
+ring.position.y = 0.001;
+scene.add(ring);
 
 // Group for loaded model
 const modelGroup = new THREE.Group();
@@ -119,17 +151,33 @@ function loadModel(entry) {
   while(modelGroup.children.length) modelGroup.remove(modelGroup.children[0]);
   
   const path = entry.path;
-  const fullPath = path.startsWith('apps/') ? '/' + path.replace('apps/web/public/', '') : '/assets-proxy/' + path;
+  // Path relative to project root: "assets/polypizza/nature/Tree.glb" or "apps/web/public/..."
+  // assets-proxy symlink: public/assets-proxy -> ../assets
+  // So "assets/foo/bar.glb" becomes "/assets-proxy/foo/bar.glb"
+  let url;
+  if (path.startsWith('assets/')) {
+    url = '/assets-proxy/' + path.substring(7);
+  } else if (path.startsWith('apps/web/public/')) {
+    url = '/' + path.substring('apps/web/public/'.length);
+  } else {
+    url = '/assets-proxy/' + path;
+  }
   
-  loader.load(fullPath, (gltf) => {
+  loader.load(url, (gltf) => {
     const model = gltf.scene;
-    // Center model
+    // Center model and place on ground
     const box = new THREE.Box3().setFromObject(model);
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z);
-    const scale = 3 / (maxDim || 1); // normalize to ~3 units
-    model.position.sub(center).multiplyScalar(scale);
+    const scale = 3 / (maxDim || 1);
+    
+    // Place model so bottom sits on the ground plane
+    model.position.set(
+      -center.x * scale,
+      -box.min.y * scale,  // lift so bottom touches y=0
+      -center.z * scale
+    );
     model.scale.setScalar(scale);
     modelGroup.add(model);
     document.getElementById('loading').style.display = 'none';
@@ -162,7 +210,9 @@ window.addEventListener('resize', () => {});
 // Filtering
 function filterAssets() {
   let filtered = db;
-  if (selectedCategory !== 'all') {
+  if (selectedCategory === 'selected') {
+    filtered = filtered.filter(e => selectedIds.has(e.id));
+  } else if (selectedCategory !== 'all') {
     filtered = filtered.filter(e => e.category === selectedCategory);
   }
   if (searchQuery) {
@@ -178,14 +228,16 @@ function filterAssets() {
 
 function renderList() {
   const filtered = filterAssets();
-  document.getElementById('stats').textContent = `${filtered.length} of ${db.length} assets`;
+  document.getElementById('stats').textContent = `${filtered.length} of ${db.length} assets · ⭐ ${selectedIds.size} selected`;
   const list = document.getElementById('list');
   list.innerHTML = '';
   for (const e of filtered.slice(0, 500)) {
     const div = document.createElement('div');
-    div.className = 'item' + (currentModel === e ? ' selected' : '');
+    const sel = selectedIds.has(e.id);
+    div.className = 'item' + (currentModel === e ? ' selected' : '') + (sel ? ' picked' : '');
+    div.style.borderLeft = sel ? '3px solid #4a4' : '3px solid transparent';
     div.innerHTML = `
-      <div class="name">${e.filename.replace('.glb','')}</div>
+      <div class="name"><span style="cursor:pointer;margin-right:4px" onclick="event.stopPropagation();toggleSelect('${e.id}')">${sel ? '⭐' : '☆'}</span> ${e.filename.replace('.glb','')}</div>
       <div class="meta">
         <span class="dim">${e.width}m×${e.height}m×${e.depth}m</span> · 
         ${e.category} · ${e.fileSizeKB}KB · ${e.source}
@@ -216,6 +268,43 @@ document.querySelectorAll('#filters button').forEach(btn => {
 
 // Initial render
 renderList();
+
+// Export / Clear buttons
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const selected = db.filter(e => selectedIds.has(e.id));
+  const data = selected.map(e => ({
+    filename: e.filename,
+    source: e.source,
+    path: e.path,
+    width: e.width,
+    height: e.height,
+    depth: e.depth,
+    category: e.category,
+    tags: e.tags,
+    suggestedScale: e.suggestedScale,
+  }));
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'selected-assets.json';
+  a.click();
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  if (confirm(`Clear all ${selectedIds.size} selections?`)) {
+    selectedIds.clear();
+    saveSelections();
+    renderList();
+  }
+});
+
+// Keyboard: space to toggle selection on current model
+document.addEventListener('keydown', (e) => {
+  if (e.key === ' ' && currentModel) {
+    e.preventDefault();
+    toggleSelect(currentModel.id);
+  }
+});
 
 // Load first tree by default
 const firstTree = db.find(e => e.category === 'tree' && e.height > 1 && e.height < 5);
